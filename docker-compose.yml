@@ -1,9 +1,9 @@
 services:
   api:
     build: .
-    container_name: survey-api
+    container_name: api
     ports:
-      - "3000:3000"
+      - "${PORT}:3000"
     volumes:
       - .:/app
     depends_on:
@@ -14,14 +14,14 @@ services:
 
   db:
     image: postgres:16.9-alpine3.22
-    container_name: survey-db
+    container_name: database
     restart: always
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5432:${POSTGRES_PORT}"
+      - "${POSTGRES_PORT}:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
 
