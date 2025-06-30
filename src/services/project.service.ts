@@ -1,9 +1,38 @@
 export class ProjectService {
     async findAll() {
         return [
-            { id: 1, title: 'Titulo do Projeto 01', type: 'Redes Sociais', status: 'ACTIVE', created_at: '30/06/2025' },
-            { id: 2, title: 'Titulo do Projeto 02', type: 'Comunidades', status: 'ACTIVE', created_at: '30/06/2025' },
-            { id: 3, title: 'Titulo do Projeto 03', type: 'Redes Sociais', status: 'INACTIVE', created_at: '30/06/2025' },
+            {
+                id: 1,
+                title: 'Titulo do Projeto 01',
+                description: 'Esse é a descrição do projeto.',
+                type_id: 3,
+                language_id: 1,
+                category_id: 2,
+                sample_source_id: 2,
+                community_id: 2,
+                status: 'ACTIVE',
+                sample_size: 500,
+                start_date: '2025-06-07',
+                end_date: '2025-06-30',
+                created_at: '2025-06-01',
+                updated_at: '2025-06-02'
+            },
+            {
+                id: 2,
+                title: 'Titulo do Projeto 02',
+                description: 'Esse é a descrição do projeto.',
+                type_id: 5,
+                language_id: 1,
+                category_id: 3,
+                sample_source_id: 2,
+                community_id: 2,
+                status: 'ACTIVE',
+                sample_size: 1000,
+                start_date: '2025-06-07',
+                end_date: '2025-06-30',
+                created_at: '2025-06-01',
+                updated_at: '2025-06-02'
+            },
         ];
     }
 }
