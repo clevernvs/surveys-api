@@ -6,6 +6,7 @@ import dotenvExpand from 'dotenv-expand';
 import companyRoutes from './routes/company.routes';
 import projectRoutes from './routes/project.routes';
 import questionnaireRoutes from './routes/questionnaire.routes';
+import questionRoutes from './routes/question.routes';
 
 const env = dotenv.config();
 dotenvExpand.expand(env);
@@ -23,5 +24,6 @@ app.get('/test', (req, res) => { res.send('ok') });
 app.use('/api/v2', companyRoutes);
 app.use('/api/v2', projectRoutes);
 app.use('/api/v2', questionnaireRoutes);
+app.use('/api/v2', questionRoutes);
 
 export default app;
