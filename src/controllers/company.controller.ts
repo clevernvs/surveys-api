@@ -3,7 +3,7 @@ import { CompanyService } from '../services/company.service';
 
 const companyService = new CompanyService();
 
-export const getAllCompanies = async (req: Request, res: Response) => {
+export const getAllCompanies = async (_req: Request, res: Response) => {
     try {
         const companies = await companyService.findAll();
         res.json(companies);

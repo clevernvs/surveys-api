@@ -3,7 +3,7 @@ import { QuestionnaireService } from '../services/questionnaire.service';
 
 const questionnaireService = new QuestionnaireService();
 
-export const getAllQuestionnaires = async (req: Request, res: Response) => {
+export const getAllQuestionnaires = async (_req: Request, res: Response) => {
     try {
         const questionnaires = await questionnaireService.findAll();
         res.json(questionnaires);

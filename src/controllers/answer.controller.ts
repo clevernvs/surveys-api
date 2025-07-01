@@ -3,7 +3,7 @@ import { AnswerService } from '../services/answer.service';
 
 const answerService = new AnswerService();
 
-export const getAllAnswers = async (req: Request, res: Response) => {
+export const getAllAnswers = async (_req: Request, res: Response) => {
     try {
         const answers = await answerService.findAll();
         res.json(answers);
