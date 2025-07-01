@@ -45,4 +45,13 @@ export class ProjectService {
             updated_at: new Date().toISOString()
         };
     }
+
+    async update(id: number, data: any) {
+        // Simulação de atualização (em produção, atualizaria no banco)
+        return {
+            id,
+            ...data,
+            updated_at: new Date().toISOString()
+        };
+    }
 }
