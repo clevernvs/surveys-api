@@ -16,11 +16,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
     res.send('API is running!!! 🚀');
 });
 
-app.get('/test', (req, res) => { res.send('ok') });
+app.get('/test', (_req, res) => { res.send('ok') });
 
 app.use('/api/v2', companyRoutes);
 app.use('/api/v2', projectRoutes);

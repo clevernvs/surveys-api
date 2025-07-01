@@ -35,4 +35,14 @@ export class ProjectService {
             },
         ];
     }
+
+    async create(data: any) {
+        // Simulação de criação (em produção, salvaria no banco)
+        return {
+            id: Math.floor(Math.random() * 10000),
+            ...data,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString()
+        };
+    }
 }
