@@ -12,11 +12,11 @@ export const getAllProjects = async (_req: Request, res: Response) => {
     }
 };
 
-export const createProject = async (req: Request, res: Response) => {
+export const createProject = async (req: Request, res: Response): Promise<void> => {
     const {
         title,
         description,
-        type_id,
+        project_type_id,
         language_id,
         category_id,
         sample_source_id,
@@ -24,19 +24,21 @@ export const createProject = async (req: Request, res: Response) => {
         status,
         sample_size,
         start_date,
-        end_date
+        end_date,
+        company_id
     } = req.body;
 
     // Validação simples dos campos obrigatórios
-    if (!title || !description || !type_id || !language_id || !category_id || !sample_source_id || !community_id || !status || !sample_size || !start_date || !end_date) {
-        return res.status(400).json({ error: 'Todos os campos obrigatórios devem ser preenchidos.' });
+    if (!title || !description || !project_type_id || !language_id || !category_id || !sample_source_id || !community_id || !status || !sample_size || !start_date || !end_date || !company_id) {
+        res.status(400).json({ error: 'Todos os campos obrigatórios devem ser preenchidos.' });
+        return;
     }
 
     try {
         const project = await projectService.create({
             title,
             description,
-            type_id,
+            project_type_id,
             language_id,
             category_id,
             sample_source_id,
@@ -44,7 +46,8 @@ export const createProject = async (req: Request, res: Response) => {
             status,
             sample_size,
             start_date,
-            end_date
+            end_date,
+            company_id
         });
         res.status(201).json(project);
     } catch (error) {
