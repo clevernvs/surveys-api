@@ -152,6 +152,29 @@ export class ProjectService {
 
     async update(id: number, data: any) {
         try {
+            // Verificar se o projeto existe
+            const existingProject = await prisma.project.findUnique({
+                where: { id }
+            });
+
+            if (!existingProject) {
+                throw new Error('Projeto não encontrado');
+            }
+
+            // Validações básicas
+            if (!data.title || !data.description || !data.company_id) {
+                throw new Error('Título, descrição e company_id são obrigatórios');
+            }
+
+            // Validar se a company existe
+            const company = await prisma.company.findUnique({
+                where: { id: data.company_id }
+            });
+
+            if (!company) {
+                throw new Error('Empresa não encontrada');
+            }
+
             // Converter campos snake_case para camelCase
             const updateData = {
                 title: data.title,
@@ -195,8 +218,26 @@ export class ProjectService {
                 created_at: project.createdAt,
                 updated_at: project.updatedAt
             };
-        } catch (error) {
+        } catch (error: any) {
             console.error('Erro ao atualizar projeto:', error);
+
+            // Tratamento específico de erros do Prisma
+            if (error.code === 'P2025') {
+                throw new Error('Projeto não encontrado');
+            }
+
+            if (error.code === 'P2002') {
+                throw new Error('Já existe um projeto com esses dados');
+            }
+
+            if (error.code === 'P2003') {
+                throw new Error('Referência inválida (foreign key constraint)');
+            }
+
+            if (error.message) {
+                throw new Error(error.message);
+            }
+
             throw new Error('Erro ao atualizar projeto no banco de dados');
         }
     }

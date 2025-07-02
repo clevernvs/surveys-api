@@ -28,8 +28,21 @@ export const createProject = async (req: Request, res: Response): Promise<void> 
         company_id
     } = req.body;
 
-    // Validação simples dos campos obrigatórios
-    if (!title || !description || !project_type_id || !language_id || !category_id || !sample_source_id || !community_id || !status || !sample_size || !start_date || !end_date || !company_id) {
+    // Validação robusta dos campos obrigatórios
+    if (
+        title === undefined || title === null ||
+        description === undefined || description === null ||
+        project_type_id === undefined || project_type_id === null ||
+        language_id === undefined || language_id === null ||
+        category_id === undefined || category_id === null ||
+        sample_source_id === undefined || sample_source_id === null ||
+        community_id === undefined || community_id === null ||
+        status === undefined || status === null ||
+        sample_size === undefined || sample_size === null ||
+        start_date === undefined || start_date === null ||
+        end_date === undefined || end_date === null ||
+        company_id === undefined || company_id === null
+    ) {
         res.status(400).json({ error: 'Todos os campos obrigatórios devem ser preenchidos.' });
         return;
     }
@@ -76,8 +89,21 @@ export const updateProject = async (req: Request, res: Response): Promise<void> 
         company_id
     } = req.body;
 
-    // Validação simples dos campos obrigatórios
-    if (!title || !description || !project_type_id || !language_id || !category_id || !sample_source_id || !community_id || !status || !sample_size || !start_date || !end_date || !company_id) {
+    // Validação robusta dos campos obrigatórios
+    if (
+        title === undefined || title === null ||
+        description === undefined || description === null ||
+        project_type_id === undefined || project_type_id === null ||
+        language_id === undefined || language_id === null ||
+        category_id === undefined || category_id === null ||
+        sample_source_id === undefined || sample_source_id === null ||
+        community_id === undefined || community_id === null ||
+        status === undefined || status === null ||
+        sample_size === undefined || sample_size === null ||
+        start_date === undefined || start_date === null ||
+        end_date === undefined || end_date === null ||
+        company_id === undefined || company_id === null
+    ) {
         res.status(400).json({ error: 'Todos os campos obrigatórios devem ser preenchidos.' });
         return;
     }
@@ -98,8 +124,24 @@ export const updateProject = async (req: Request, res: Response): Promise<void> 
             company_id
         });
         res.status(200).json(project);
-    } catch (error) {
-        res.status(500).json({ error: 'Erro ao atualizar projeto' });
+    } catch (error: any) {
+        console.error('Erro detalhado na atualização:', error);
+
+        // Tratamento específico de erros
+        if (error.message === 'Projeto não encontrado') {
+            res.status(404).json({ error: 'Projeto não encontrado' });
+            return;
+        }
+
+        if (error.message === 'Empresa não encontrada') {
+            res.status(400).json({ error: 'Empresa não encontrada' });
+            return;
+        }
+
+        res.status(500).json({
+            error: 'Erro ao atualizar projeto',
+            details: error.message || 'Erro desconhecido'
+        });
     }
 };
 
