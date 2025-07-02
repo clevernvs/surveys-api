@@ -1,68 +1,187 @@
+import prisma from '../prisma/client';
+
 export class ProjectService {
     async findAll() {
-        return [
-            {
-                id: 1,
-                title: 'Titulo do Projeto 01',
-                description: 'Esse é a descrição do projeto.',
-                type_id: 3,
-                language_id: 1,
-                category_id: 2,
-                sample_source_id: 2,
-                community_id: 2,
-                status: 'ACTIVE',
-                sample_size: 500,
-                start_date: '2025-06-07',
-                end_date: '2025-06-30',
-                created_at: '2025-06-01',
-                updated_at: '2025-06-02'
-            },
-            {
-                id: 2,
-                title: 'Titulo do Projeto 02',
-                description: 'Esse é a descrição do projeto.',
-                type_id: 5,
-                language_id: 1,
-                category_id: 3,
-                sample_source_id: 2,
-                community_id: 2,
-                status: 'ACTIVE',
-                sample_size: 1000,
-                start_date: '2025-06-07',
-                end_date: '2025-06-30',
-                created_at: '2025-06-01',
-                updated_at: '2025-06-02'
-            },
-        ];
-    }
+        try {
+            const projects = await prisma.project.findMany({
+                include: {
+                    company: true
+                }
+            });
 
-    async create(data: any) {
-        // Simulação de criação (em produção, salvaria no banco)
-        return {
-            id: Math.floor(Math.random() * 10000),
-            ...data,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-        };
-    }
-
-    async update(id: number, data: any) {
-        // Simulação de atualização (em produção, atualizaria no banco)
-        return {
-            id,
-            ...data,
-            updated_at: new Date().toISOString()
-        };
+            // Converter campos camelCase para snake_case para manter compatibilidade
+            return projects.map(project => ({
+                id: project.id,
+                title: project.title,
+                description: project.description,
+                project_type_id: project.projectTypeId,
+                language_id: project.languageId,
+                category_id: project.categoryId,
+                sample_source_id: project.sampleSourceId,
+                community_id: project.communityId,
+                status: project.status,
+                sample_size: project.sampleSize,
+                start_date: project.startDate,
+                end_date: project.endDate,
+                company_id: project.companyId,
+                company: project.company,
+                created_at: project.createdAt,
+                updated_at: project.updatedAt
+            }));
+        } catch (error) {
+            console.error('Erro ao buscar projetos:', error);
+            throw new Error('Erro ao buscar projetos no banco de dados');
+        }
     }
 
     async findById(id: number) {
-        // Simulação de busca por ID (em produção, buscaria no banco)
-        const projects = await this.findAll();
-        return projects.find(project => project.id === id) || null;
+        try {
+            const project = await prisma.project.findUnique({
+                where: { id },
+                include: {
+                    company: true
+                }
+            });
+
+            if (!project) {
+                return null;
+            }
+
+            // Converter campos camelCase para snake_case
+            return {
+                id: project.id,
+                title: project.title,
+                description: project.description,
+                project_type_id: project.projectTypeId,
+                language_id: project.languageId,
+                category_id: project.categoryId,
+                sample_source_id: project.sampleSourceId,
+                community_id: project.communityId,
+                status: project.status,
+                sample_size: project.sampleSize,
+                start_date: project.startDate,
+                end_date: project.endDate,
+                company_id: project.companyId,
+                company: project.company,
+                created_at: project.createdAt,
+                updated_at: project.updatedAt
+            };
+        } catch (error) {
+            console.error('Erro ao buscar projeto por ID:', error);
+            throw new Error('Erro ao buscar projeto no banco de dados');
+        }
+    }
+
+    async create(data: any) {
+        try {
+            // Converter campos snake_case para camelCase para o Prisma
+            const projectData = {
+                title: data.title,
+                description: data.description,
+                projectTypeId: data.project_type_id,
+                languageId: data.language_id,
+                categoryId: data.category_id,
+                sampleSourceId: data.sample_source_id,
+                communityId: data.community_id,
+                status: data.status,
+                sampleSize: data.sample_size,
+                startDate: new Date(data.start_date),
+                endDate: new Date(data.end_date),
+                companyId: data.company_id
+            };
+
+            const project = await prisma.project.create({
+                data: projectData,
+                include: {
+                    company: true
+                }
+            });
+
+            // Converter de volta para snake_case
+            return {
+                id: project.id,
+                title: project.title,
+                description: project.description,
+                project_type_id: project.projectTypeId,
+                language_id: project.languageId,
+                category_id: project.categoryId,
+                sample_source_id: project.sampleSourceId,
+                community_id: project.communityId,
+                status: project.status,
+                sample_size: project.sampleSize,
+                start_date: project.startDate,
+                end_date: project.endDate,
+                company_id: project.companyId,
+                company: project.company,
+                created_at: project.createdAt,
+                updated_at: project.updatedAt
+            };
+        } catch (error) {
+            console.error('Erro ao criar projeto:', error);
+            throw new Error('Erro ao criar projeto no banco de dados');
+        }
+    }
+
+    async update(id: number, data: any) {
+        try {
+            // Converter campos snake_case para camelCase
+            const updateData = {
+                title: data.title,
+                description: data.description,
+                projectTypeId: data.project_type_id,
+                languageId: data.language_id,
+                categoryId: data.category_id,
+                sampleSourceId: data.sample_source_id,
+                communityId: data.community_id,
+                status: data.status,
+                sampleSize: data.sample_size,
+                startDate: new Date(data.start_date),
+                endDate: new Date(data.end_date),
+                companyId: data.company_id
+            };
+
+            const project = await prisma.project.update({
+                where: { id },
+                data: updateData,
+                include: {
+                    company: true
+                }
+            });
+
+            // Converter de volta para snake_case
+            return {
+                id: project.id,
+                title: project.title,
+                description: project.description,
+                project_type_id: project.projectTypeId,
+                language_id: project.languageId,
+                category_id: project.categoryId,
+                sample_source_id: project.sampleSourceId,
+                community_id: project.communityId,
+                status: project.status,
+                sample_size: project.sampleSize,
+                start_date: project.startDate,
+                end_date: project.endDate,
+                company_id: project.companyId,
+                company: project.company,
+                created_at: project.createdAt,
+                updated_at: project.updatedAt
+            };
+        } catch (error) {
+            console.error('Erro ao atualizar projeto:', error);
+            throw new Error('Erro ao atualizar projeto no banco de dados');
+        }
     }
 
     async delete(id: number) {
-        // Simulação de exclusão (em produção, deletaria do banco)
-        return { success: true, message: `Projeto ${id} deletado com sucesso` };
+        try {
+            await prisma.project.delete({
+                where: { id }
+            });
+            return { success: true, message: `Projeto ${id} deletado com sucesso` };
+        } catch (error) {
+            console.error('Erro ao deletar projeto:', error);
+            throw new Error('Erro ao deletar projeto do banco de dados');
+        }
     }
 }
