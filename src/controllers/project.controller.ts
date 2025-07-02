@@ -98,3 +98,31 @@ export const updateProject = async (req: Request, res: Response): Promise<void> 
         res.status(500).json({ error: 'Erro ao atualizar projeto' });
     }
 };
+
+export const deleteProject = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+
+    try {
+        await projectService.delete(Number(id));
+        res.status(204).send();
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao deletar projeto' });
+    }
+};
+
+export const getProjectById = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
+
+    try {
+        const project = await projectService.findById(Number(id));
+
+        if (!project) {
+            res.status(404).json({ error: 'Projeto não encontrado' });
+            return;
+        }
+
+        res.json(project);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao buscar projeto' });
+    }
+};

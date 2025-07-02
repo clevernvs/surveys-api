@@ -54,4 +54,15 @@ export class ProjectService {
             updated_at: new Date().toISOString()
         };
     }
+
+    async findById(id: number) {
+        // Simulação de busca por ID (em produção, buscaria no banco)
+        const projects = await this.findAll();
+        return projects.find(project => project.id === id) || null;
+    }
+
+    async delete(id: number) {
+        // Simulação de exclusão (em produção, deletaria do banco)
+        return { success: true, message: `Projeto ${id} deletado com sucesso` };
+    }
 }
