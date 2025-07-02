@@ -50,8 +50,12 @@ export const createProject = async (req: Request, res: Response): Promise<void> 
             company_id
         });
         res.status(201).json(project);
-    } catch (error) {
-        res.status(500).json({ error: 'Erro ao criar projeto' });
+    } catch (error: any) {
+        console.error('Erro detalhado:', error);
+        res.status(500).json({
+            error: 'Erro ao criar projeto',
+            details: error.message || 'Erro desconhecido'
+        });
     }
 };
 

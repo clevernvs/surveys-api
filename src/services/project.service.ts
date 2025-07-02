@@ -74,6 +74,20 @@ export class ProjectService {
 
     async create(data: any) {
         try {
+            // Validações básicas
+            if (!data.title || !data.description || !data.company_id) {
+                throw new Error('Título, descrição e company_id são obrigatórios');
+            }
+
+            // Validar se a company existe
+            const company = await prisma.company.findUnique({
+                where: { id: data.company_id }
+            });
+
+            if (!company) {
+                throw new Error('Empresa não encontrada');
+            }
+
             // Converter campos snake_case para camelCase para o Prisma
             const projectData = {
                 title: data.title,
@@ -116,8 +130,22 @@ export class ProjectService {
                 created_at: project.createdAt,
                 updated_at: project.updatedAt
             };
-        } catch (error) {
+        } catch (error: any) {
             console.error('Erro ao criar projeto:', error);
+
+            // Tratamento específico de erros do Prisma
+            if (error.code === 'P2002') {
+                throw new Error('Já existe um projeto com esses dados');
+            }
+
+            if (error.code === 'P2003') {
+                throw new Error('Referência inválida (foreign key constraint)');
+            }
+
+            if (error.message) {
+                throw new Error(error.message);
+            }
+
             throw new Error('Erro ao criar projeto no banco de dados');
         }
     }
