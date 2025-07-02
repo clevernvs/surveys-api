@@ -16,66 +16,66 @@ datasource db {
 }
 
 model Company {
-  id        Int       @id @default(autoincrement())
-  name      String    @unique
-  projects  Project[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id         Int       @id @default(autoincrement())
+  name       String    @unique
+  projects   Project[]
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
 }
 
 model Project {
-  id             Int             @id @default(autoincrement())
-  title          String
-  description    String
-  projectTypeId  Int
-  languageId     Int
-  categoryId     Int
-  sampleSourceId Int
-  communityId    Int
-  status         Boolean
-  sampleSize     Int
-  startDate      DateTime
-  endDate        DateTime
-  companyId      Int
-  company        Company         @relation(fields: [companyId], references: [id])
-  questionnaires Questionnaire[]
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  id               Int             @id @default(autoincrement())
+  title            String
+  description      String
+  project_type_id  Int
+  language_id      Int
+  category_id      Int
+  sample_source_id Int
+  community_id     Int
+  status_id        Int
+  sample_size      Int
+  start_date       DateTime
+  end_date         DateTime
+  company_id       Int
+  company          Company         @relation(fields: [company_id], references: [id])
+  questionnaires   Questionnaire[]
+  created_at       DateTime        @default(now())
+  updated_at       DateTime        @updatedAt
 }
 
 model Questionnaire {
-  id                Int        @id @default(autoincrement())
-  title             String
-  filterId          Int
-  randomizedAnswers Boolean @default(false)
-  status            Boolean
-  projectId         Int
-  project           Project    @relation(fields: [projectId], references: [id])
-  questions         Question[]
-  createdAt         DateTime   @default(now())
-  updatedAt         DateTime   @updatedAt
+  id                 Int        @id @default(autoincrement())
+  title              String
+  filter_id          Int
+  randomized_answers Boolean    @default(false)
+  status_id          Int
+  project_id         Int
+  project            Project    @relation(fields: [project_id], references: [id])
+  questions          Question[]
+  created_at         DateTime   @default(now())
+  updated_at         DateTime   @updatedAt
 }
 
 model Question {
-  id              Int           @id @default(autoincrement())
-  title           String
-  questionTypeId  Int
-  required        Boolean @default(false)
-  questionnaireId Int
-  questionnaire   Questionnaire @relation(fields: [questionnaireId], references: [id])
-  answers         Answer[]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  id                Int           @id @default(autoincrement())
+  title             String
+  question_type_id  Int
+  required          Boolean       @default(false)
+  questionnaire_id  Int
+  questionnaire     Questionnaire @relation(fields: [questionnaire_id], references: [id])
+  answers           Answer[]
+  created_at        DateTime      @default(now())
+  updated_at        DateTime      @updatedAt
 }
 
 model Answer {
-  id               Int      @id @default(autoincrement())
-  title            String
-  questionId       Int
-  fixed            Boolean @default(false)
-  numericOrder    Int
-  skiptoQuestionId Int?
-  question         Question @relation(fields: [questionId], references: [id])
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
+  id                  Int      @id @default(autoincrement())
+  title               String
+  question_id         Int
+  fixed               Boolean  @default(false)
+  numeric_order       Int
+  skip_to_question_id Int?
+  question            Question @relation(fields: [question_id], references: [id])
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
 }

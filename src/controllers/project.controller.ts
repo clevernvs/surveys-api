@@ -78,7 +78,7 @@ export const deleteProject = async (req: Request, res: Response): Promise<void> 
     const { id } = req.params;
 
     try {
-        const result = await projectService.delete(Number(id));
+        await projectService.delete(Number(id));
         res.status(204).send();
     } catch (error: any) {
         console.error('Erro detalhado na exclusão:', error);

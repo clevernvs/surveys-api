@@ -32,16 +32,16 @@ async function main() {
             id: 1,
             title: 'Projeto de Pesquisa de Mercado',
             description: 'Pesquisa sobre preferências de consumidores',
-            projectTypeId: 1,
-            languageId: 1,
-            categoryId: 1,
-            sampleSourceId: 1,
-            communityId: 1,
+            project_type_id: 1,
+            language_id: 1,
+            category_id: 1,
+            sample_source_id: 1,
+            community_id: 1,
             status: true,
-            sampleSize: 500,
-            startDate: new Date('2025-01-01'),
-            endDate: new Date('2025-12-31'),
-            companyId: 1
+            sample_size: 500,
+            start_date: new Date('2025-01-01'),
+            end_date: new Date('2025-12-31'),
+            company_id: 1
         }
     });
 
@@ -52,16 +52,16 @@ async function main() {
             id: 2,
             title: 'Estudo de Satisfação do Cliente',
             description: 'Avaliação da satisfação dos clientes com nossos produtos',
-            projectTypeId: 2,
-            languageId: 1,
-            categoryId: 2,
-            sampleSourceId: 2,
-            communityId: 2,
+            project_type_id: 2,
+            language_id: 1,
+            category_id: 2,
+            sample_source_id: 2,
+            community_id: 2,
             status: true,
-            sampleSize: 1000,
-            startDate: new Date('2025-02-01'),
-            endDate: new Date('2025-11-30'),
-            companyId: 2
+            sample_size: 1000,
+            start_date: new Date('2025-02-01'),
+            end_date: new Date('2025-11-30'),
+            company_id: 2
         }
     });
 

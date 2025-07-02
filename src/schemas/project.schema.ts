@@ -30,10 +30,9 @@ export const ProjectSchema = z.object({
         .int('ID da comunidade deve ser um número inteiro')
         .positive('ID da comunidade deve ser positivo'),
 
-    status: z.boolean({
-        required_error: 'Status é obrigatório',
-        invalid_type_error: 'Status deve ser um booleano'
-    }),
+    status_id: z.number()
+        .int('ID do status deve ser um número inteiro')
+        .positive('ID do status deve ser positivo'),
 
     sample_size: z.number()
         .int('Tamanho da amostra deve ser um número inteiro')
