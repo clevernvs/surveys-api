@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { ProjectService } from '../services/project.service';
+import { CreateProjectInput, UpdateProjectInput } from '../schemas/project.schema';
 
 const projectService = new ProjectService();
 
@@ -12,56 +13,28 @@ export const getAllProjects = async (_req: Request, res: Response) => {
     }
 };
 
-export const createProject = async (req: Request, res: Response): Promise<void> => {
-    const {
-        title,
-        description,
-        project_type_id,
-        language_id,
-        category_id,
-        sample_source_id,
-        community_id,
-        status,
-        sample_size,
-        start_date,
-        end_date,
-        company_id
-    } = req.body;
-
-    // Validação robusta dos campos obrigatórios
-    if (
-        title === undefined || title === null ||
-        description === undefined || description === null ||
-        project_type_id === undefined || project_type_id === null ||
-        language_id === undefined || language_id === null ||
-        category_id === undefined || category_id === null ||
-        sample_source_id === undefined || sample_source_id === null ||
-        community_id === undefined || community_id === null ||
-        status === undefined || status === null ||
-        sample_size === undefined || sample_size === null ||
-        start_date === undefined || start_date === null ||
-        end_date === undefined || end_date === null ||
-        company_id === undefined || company_id === null
-    ) {
-        res.status(400).json({ error: 'Todos os campos obrigatórios devem ser preenchidos.' });
-        return;
-    }
+export const getProjectById = async (req: Request, res: Response): Promise<void> => {
+    const { id } = req.params;
 
     try {
-        const project = await projectService.create({
-            title,
-            description,
-            project_type_id,
-            language_id,
-            category_id,
-            sample_source_id,
-            community_id,
-            status,
-            sample_size,
-            start_date,
-            end_date,
-            company_id
-        });
+        const project = await projectService.findById(Number(id));
+
+        if (!project) {
+            res.status(404).json({ error: 'Projeto não encontrado' });
+            return;
+        }
+
+        res.json(project);
+    } catch (error) {
+        res.status(500).json({ error: 'Erro ao buscar projeto' });
+    }
+};
+
+export const createProject = async (req: Request, res: Response): Promise<void> => {
+    try {
+        // req.body já está validado pelo middleware Zod
+        const projectData: CreateProjectInput = req.body;
+        const project = await projectService.create(projectData);
         res.status(201).json(project);
     } catch (error: any) {
         console.error('Erro detalhado:', error);
@@ -74,55 +47,11 @@ export const createProject = async (req: Request, res: Response): Promise<void> 
 
 export const updateProject = async (req: Request, res: Response): Promise<void> => {
     const { id } = req.params;
-    const {
-        title,
-        description,
-        project_type_id,
-        language_id,
-        category_id,
-        sample_source_id,
-        community_id,
-        status,
-        sample_size,
-        start_date,
-        end_date,
-        company_id
-    } = req.body;
-
-    // Validação robusta dos campos obrigatórios
-    if (
-        title === undefined || title === null ||
-        description === undefined || description === null ||
-        project_type_id === undefined || project_type_id === null ||
-        language_id === undefined || language_id === null ||
-        category_id === undefined || category_id === null ||
-        sample_source_id === undefined || sample_source_id === null ||
-        community_id === undefined || community_id === null ||
-        status === undefined || status === null ||
-        sample_size === undefined || sample_size === null ||
-        start_date === undefined || start_date === null ||
-        end_date === undefined || end_date === null ||
-        company_id === undefined || company_id === null
-    ) {
-        res.status(400).json({ error: 'Todos os campos obrigatórios devem ser preenchidos.' });
-        return;
-    }
 
     try {
-        const project = await projectService.update(Number(id), {
-            title,
-            description,
-            project_type_id,
-            language_id,
-            category_id,
-            sample_source_id,
-            community_id,
-            status,
-            sample_size,
-            start_date,
-            end_date,
-            company_id
-        });
+        // req.body já está validado pelo middleware Zod
+        const projectData: UpdateProjectInput = req.body;
+        const project = await projectService.update(Number(id), projectData);
         res.status(200).json(project);
     } catch (error: any) {
         console.error('Erro detalhado na atualização:', error);
@@ -169,22 +98,5 @@ export const deleteProject = async (req: Request, res: Response): Promise<void> 
             error: 'Erro ao deletar projeto',
             details: error.message || 'Erro desconhecido'
         });
-    }
-};
-
-export const getProjectById = async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params;
-
-    try {
-        const project = await projectService.findById(Number(id));
-
-        if (!project) {
-            res.status(404).json({ error: 'Projeto não encontrado' });
-            return;
-        }
-
-        res.json(project);
-    } catch (error) {
-        res.status(500).json({ error: 'Erro ao buscar projeto' });
     }
 };
