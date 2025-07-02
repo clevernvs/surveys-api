@@ -244,12 +244,39 @@ export class ProjectService {
 
     async delete(id: number) {
         try {
+            // Verificar se o projeto existe antes de deletar
+            const existingProject = await prisma.project.findUnique({
+                where: { id }
+            });
+
+            if (!existingProject) {
+                throw new Error('Projeto não encontrado');
+            }
+
             await prisma.project.delete({
                 where: { id }
             });
-            return { success: true, message: `Projeto ${id} deletado com sucesso` };
-        } catch (error) {
+
+            return {
+                success: true,
+                message: `Projeto "${existingProject.title}" (ID: ${id}) deletado com sucesso`
+            };
+        } catch (error: any) {
             console.error('Erro ao deletar projeto:', error);
+
+            // Tratamento específico de erros do Prisma
+            if (error.code === 'P2025') {
+                throw new Error('Projeto não encontrado');
+            }
+
+            if (error.code === 'P2003') {
+                throw new Error('Não é possível deletar o projeto pois possui relacionamentos ativos');
+            }
+
+            if (error.message) {
+                throw new Error(error.message);
+            }
+
             throw new Error('Erro ao deletar projeto do banco de dados');
         }
     }

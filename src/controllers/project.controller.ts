@@ -149,10 +149,26 @@ export const deleteProject = async (req: Request, res: Response): Promise<void> 
     const { id } = req.params;
 
     try {
-        await projectService.delete(Number(id));
+        const result = await projectService.delete(Number(id));
         res.status(204).send();
-    } catch (error) {
-        res.status(500).json({ error: 'Erro ao deletar projeto' });
+    } catch (error: any) {
+        console.error('Erro detalhado na exclusão:', error);
+
+        // Tratamento específico de erros
+        if (error.message === 'Projeto não encontrado') {
+            res.status(404).json({ error: 'Projeto não encontrado' });
+            return;
+        }
+
+        if (error.message.includes('relacionamentos ativos')) {
+            res.status(400).json({ error: error.message });
+            return;
+        }
+
+        res.status(500).json({
+            error: 'Erro ao deletar projeto',
+            details: error.message || 'Erro desconhecido'
+        });
     }
 };
 
