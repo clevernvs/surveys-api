@@ -66,4 +66,24 @@ export class AnswerService {
             throw new Error('Erro ao atualizar resposta no banco de dados');
         }
     }
+
+    async delete(id: number) {
+        try {
+            const existingAnswer = await prisma.answer.findUnique({ where: { id } });
+            if (!existingAnswer) {
+                throw new Error('Resposta não encontrada');
+            }
+            await prisma.answer.delete({ where: { id } });
+            return { success: true, message: `Resposta (ID: ${id}) deletada com sucesso` };
+        } catch (error: any) {
+            console.error('Erro ao deletar resposta:', error);
+            if (error.code === 'P2025') {
+                throw new Error('Resposta não encontrada');
+            }
+            if (error.message) {
+                throw new Error(error.message);
+            }
+            throw new Error('Erro ao deletar resposta do banco de dados');
+        }
+    }
 }

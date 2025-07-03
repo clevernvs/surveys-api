@@ -30,3 +30,13 @@ export const updateAnswer = async (req: Request, res: Response) => {
         res.status(500).json({ error: error.message || 'Erro ao atualizar resposta' });
     }
 };
+
+export const deleteAnswer = async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+        const result = await answerService.delete(id);
+        res.json(result);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message || 'Erro ao deletar resposta' });
+    }
+};
