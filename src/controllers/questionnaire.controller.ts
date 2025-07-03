@@ -46,6 +46,80 @@ export const createQuestionnaire = async (req: Request, res: Response) => {
     }
 };
 
+export const updateQuestionnaire = async (req: Request, res: Response) => {
+    try {
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) {
+            return res.status(400).json({
+                success: false,
+                error: 'ID inválido',
+                message: 'O ID deve ser um número válido'
+            });
+        }
+
+        const questionnaire = await questionnaireService.update(id, req.body);
+        res.json({
+            success: true,
+            data: questionnaire,
+            message: 'Questionário atualizado com sucesso'
+        });
+    } catch (error) {
+        if (error instanceof Error) {
+            if (error.message === 'Questionário não encontrado') {
+                return res.status(404).json({
+                    success: false,
+                    error: 'Questionário não encontrado',
+                    message: 'O questionário especificado não existe'
+                });
+            }
+            if (error.message === 'Projeto não encontrado') {
+                return res.status(404).json({
+                    success: false,
+                    error: 'Projeto não encontrado',
+                    message: 'O projeto especificado não existe'
+                });
+            }
+        }
+        res.status(500).json({
+            success: false,
+            error: 'Erro interno do servidor ao atualizar questionário',
+            message: error instanceof Error ? error.message : 'Erro desconhecido'
+        });
+    }
+};
+
+export const deleteQuestionnaire = async (req: Request, res: Response) => {
+    try {
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) {
+            return res.status(400).json({
+                success: false,
+                error: 'ID inválido',
+                message: 'O ID deve ser um número válido'
+            });
+        }
+
+        const result = await questionnaireService.delete(id);
+        res.json({
+            success: true,
+            message: result.message
+        });
+    } catch (error) {
+        if (error instanceof Error && error.message === 'Questionário não encontrado') {
+            return res.status(404).json({
+                success: false,
+                error: 'Questionário não encontrado',
+                message: 'O questionário especificado não existe'
+            });
+        }
+        res.status(500).json({
+            success: false,
+            error: 'Erro interno do servidor ao deletar questionário',
+            message: error instanceof Error ? error.message : 'Erro desconhecido'
+        });
+    }
+};
+
 export const createTestData = async (_req: Request, res: Response) => {
     try {
         console.log('Criando dados de teste...');
