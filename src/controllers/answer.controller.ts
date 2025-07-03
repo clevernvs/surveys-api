@@ -11,3 +11,12 @@ export const getAllAnswers = async (_req: Request, res: Response) => {
         res.status(500).json({ error: 'Erro ao buscar todas as perguntas' });
     }
 };
+
+export const createAnswer = async (req: Request, res: Response) => {
+    try {
+        const answer = await answerService.create(req.body);
+        res.status(201).json(answer);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message || 'Erro ao criar resposta' });
+    }
+};
