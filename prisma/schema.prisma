@@ -38,6 +38,12 @@ model Project {
   end_date         DateTime
   company_id       Int
   company          Company         @relation(fields: [company_id], references: [id])
+  project_type     ProjectType     @relation(fields: [project_type_id], references: [id])
+  language         Language        @relation(fields: [language_id], references: [id])
+  category         Category        @relation(fields: [category_id], references: [id])
+  sample_source    SampleSource    @relation(fields: [sample_source_id], references: [id])
+  community        Community       @relation(fields: [community_id], references: [id])
+  status           Status          @relation(fields: [status_id], references: [id])
   questionnaires   Questionnaire[]
   created_at       DateTime        @default(now())
   updated_at       DateTime        @updatedAt
@@ -51,31 +57,103 @@ model Questionnaire {
   status_id          Int
   project_id         Int
   project            Project    @relation(fields: [project_id], references: [id])
+  filter             Filter     @relation(fields: [filter_id], references: [id])
+  status             Status     @relation(fields: [status_id], references: [id])
   questions          Question[]
   created_at         DateTime   @default(now())
   updated_at         DateTime   @updatedAt
 }
 
 model Question {
-  id                Int           @id @default(autoincrement())
-  title             String
-  question_type_id  Int
-  required          Boolean       @default(false)
-  questionnaire_id  Int
-  questionnaire     Questionnaire @relation(fields: [questionnaire_id], references: [id])
-  answers           Answer[]
-  created_at        DateTime      @default(now())
-  updated_at        DateTime      @updatedAt
+  id               Int           @id @default(autoincrement())
+  title            String
+  question_type_id Int
+  required         Boolean       @default(false)
+  questionnaire_id Int
+  questionnaire    Questionnaire @relation(fields: [questionnaire_id], references: [id])
+  question_type    QuestionType  @relation(fields: [question_type_id], references: [id])
+  answers          Answer[]      @relation("QuestionAnswers")
+  skip_to_answers  Answer[]      @relation("SkipToQuestion")
+  created_at       DateTime      @default(now())
+  updated_at       DateTime      @updatedAt
 }
 
 model Answer {
-  id                  Int      @id @default(autoincrement())
+  id                  Int       @id @default(autoincrement())
   title               String
   question_id         Int
-  fixed               Boolean  @default(false)
+  fixed               Boolean   @default(false)
   numeric_order       Int
   skip_to_question_id Int?
-  question            Question @relation(fields: [question_id], references: [id])
-  created_at          DateTime @default(now())
-  updated_at          DateTime @updatedAt
+  question            Question  @relation("QuestionAnswers", fields: [question_id], references: [id])
+  skip_to_question    Question? @relation("SkipToQuestion", fields: [skip_to_question_id], references: [id])
+  created_at          DateTime  @default(now())
+  updated_at          DateTime  @updatedAt
+}
+
+model QuestionType {
+  id         Int        @id @default(autoincrement())
+  name       String
+  questions  Question[]
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt
+}
+
+model Language {
+  id         Int       @id @default(autoincrement())
+  name       String
+  code       String
+  projects   Project[]
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+}
+
+model Category {
+  id         Int       @id @default(autoincrement())
+  name       String
+  projects   Project[]
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+}
+
+model ProjectType {
+  id         Int       @id @default(autoincrement())
+  name       String
+  projects   Project[]
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+}
+
+model Community {
+  id         Int       @id @default(autoincrement())
+  name       String
+  projects   Project[]
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+}
+
+model Status {
+  id             Int             @id @default(autoincrement())
+  name           String
+  projects       Project[]
+  questionnaires Questionnaire[]
+  created_at     DateTime        @default(now())
+  updated_at     DateTime        @updatedAt
+}
+
+model SampleSource {
+  id         Int       @id @default(autoincrement())
+  name       String
+  projects   Project[]
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+}
+
+model Filter {
+  id             Int             @id @default(autoincrement())
+  name           String
+  description    String?
+  questionnaires Questionnaire[]
+  created_at     DateTime        @default(now())
+  updated_at     DateTime        @updatedAt
 }
