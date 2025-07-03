@@ -6,8 +6,17 @@ const questionService = new QuestionService();
 export const getAllQuestions = async (_req: Request, res: Response) => {
     try {
         const questions = await questionService.findAll();
-        res.json(questions);
+        res.json({
+            success: true,
+            data: questions,
+            message: 'Questões encontradas com sucesso'
+        });
     } catch (error) {
-        res.status(500).json({ error: 'Erro ao buscar projetos' });
+        console.error('Erro no controller de questões:', error);
+        res.status(500).json({
+            success: false,
+            error: 'Erro interno do servidor ao buscar questões',
+            message: error instanceof Error ? error.message : 'Erro desconhecido'
+        });
     }
 };
