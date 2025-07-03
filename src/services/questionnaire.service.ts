@@ -23,6 +23,29 @@ export class QuestionnaireService {
         }
     }
 
+    async findById(id: number) {
+        try {
+            const questionnaire = await prisma.questionnaire.findUnique({
+                where: { id },
+                include: {
+                    project: {
+                        include: {
+                            company: true
+                        }
+                    }
+                }
+            });
+
+            if (!questionnaire) {
+                throw new Error('Questionário não encontrado');
+            }
+
+            return questionnaire;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async create(data: any) {
         try {
             // Verifica se o projeto existe

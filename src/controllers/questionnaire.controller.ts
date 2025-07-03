@@ -22,6 +22,39 @@ export const getAllQuestionnaires = async (_req: Request, res: Response) => {
     }
 };
 
+export const getQuestionnaireById = async (req: Request, res: Response) => {
+    try {
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) {
+            return res.status(400).json({
+                success: false,
+                error: 'ID inválido',
+                message: 'O ID deve ser um número válido'
+            });
+        }
+
+        const questionnaire = await questionnaireService.findById(id);
+        res.json({
+            success: true,
+            data: questionnaire,
+            message: 'Questionário encontrado com sucesso'
+        });
+    } catch (error) {
+        if (error instanceof Error && error.message === 'Questionário não encontrado') {
+            return res.status(404).json({
+                success: false,
+                error: 'Questionário não encontrado',
+                message: 'O questionário especificado não existe'
+            });
+        }
+        res.status(500).json({
+            success: false,
+            error: 'Erro interno do servidor ao buscar questionário',
+            message: error instanceof Error ? error.message : 'Erro desconhecido'
+        });
+    }
+};
+
 export const createQuestionnaire = async (req: Request, res: Response) => {
     try {
         const questionnaire = await questionnaireService.create(req.body);

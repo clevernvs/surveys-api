@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { getAllQuestionnaires, createQuestionnaire, updateQuestionnaire, deleteQuestionnaire, createTestData } from '../controllers/questionnaire.controller';
+import { getAllQuestionnaires, getQuestionnaireById, createQuestionnaire, updateQuestionnaire, deleteQuestionnaire, createTestData } from '../controllers/questionnaire.controller';
 
 const router = Router();
 
 router.get('/questionnaires', getAllQuestionnaires);
+router.get('/questionnaires/:id', getQuestionnaireById);
 router.post('/questionnaires', createQuestionnaire);
 router.put('/questionnaires/:id', updateQuestionnaire);
 router.delete('/questionnaires/:id', deleteQuestionnaire);
