@@ -90,3 +90,38 @@ export const updateQuestion = async (req: Request, res: Response): Promise<void>
         });
     }
 };
+
+export const deleteQuestion = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) {
+            res.status(400).json({
+                success: false,
+                error: 'ID inválido',
+                message: 'O ID deve ser um número válido'
+            });
+            return;
+        }
+
+        const result = await questionService.delete(id);
+        res.json({
+            success: true,
+            data: result,
+            message: 'Questão excluída com sucesso'
+        });
+    } catch (error) {
+        if (error instanceof Error && error.message === 'Questão não encontrada') {
+            res.status(404).json({
+                success: false,
+                error: 'Questão não encontrada',
+                message: 'A questão especificada não existe'
+            });
+            return;
+        }
+        res.status(500).json({
+            success: false,
+            error: 'Erro interno do servidor ao excluir questão',
+            message: error instanceof Error ? error.message : 'Erro desconhecido'
+        });
+    }
+};

@@ -112,4 +112,25 @@ export class QuestionService {
             throw error;
         }
     }
+
+    async delete(id: number) {
+        try {
+            // Verifica se a questão existe
+            const existingQuestion = await prisma.question.findUnique({
+                where: { id }
+            });
+            if (!existingQuestion) {
+                throw new Error('Questão não encontrada');
+            }
+
+            // Exclui a questão
+            await prisma.question.delete({
+                where: { id }
+            });
+
+            return { message: 'Questão excluída com sucesso' };
+        } catch (error) {
+            throw error;
+        }
+    }
 }
