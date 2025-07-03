@@ -1,10 +1,10 @@
 import prisma from '../prisma/client';
 
-async function seedCategories() {
+async function seedProjectCategories() {
     try {
-        console.log('🌱 Iniciando seed de Categories...');
+        console.log('🌱 Iniciando seed de ProjectCategories...');
 
-        const categories = [
+        const projectCategories = [
             {
                 name: 'Pesquisa de Mercado',
                 created_at: new Date(),
@@ -67,24 +67,24 @@ async function seedCategories() {
             }
         ];
 
-        for (const category of categories) {
-            const existingCategory = await prisma.category.findFirst({
-                where: { name: category.name }
+        for (const projectCategory of projectCategories) {
+            const existingProjectCategory = await prisma.projectCategory.findFirst({
+                where: { name: projectCategory.name }
             });
 
-            if (!existingCategory) {
-                const createdCategory = await prisma.category.create({
-                    data: category
+            if (!existingProjectCategory) {
+                const createdProjectCategory = await prisma.projectCategory.create({
+                    data: projectCategory
                 });
-                console.log(`✅ Category criada: ${createdCategory.name} - ID: ${createdCategory.id}`);
+                console.log(`✅ ProjectCategory criada: ${createdProjectCategory.name} - ID: ${createdProjectCategory.id}`);
             } else {
-                console.log(`⏭️ Category já existe: ${existingCategory.name} - ID: ${existingCategory.id}`);
+                console.log(`⏭️ ProjectCategory já existe: ${existingProjectCategory.name} - ID: ${existingProjectCategory.id}`);
             }
         }
 
-        console.log('🎉 Seed de Categories concluído com sucesso!');
+        console.log('🎉 Seed de ProjectCategories concluído com sucesso!');
     } catch (error) {
-        console.error('❌ Erro durante o seed de Categories:', error);
+        console.error('❌ Erro durante o seed de ProjectCategories:', error);
         throw error;
     } finally {
         await prisma.$disconnect();
@@ -93,7 +93,7 @@ async function seedCategories() {
 
 // Executar o seed se o arquivo for executado diretamente
 if (require.main === module) {
-    seedCategories()
+    seedProjectCategories()
         .then(() => {
             console.log('✅ Seed executado com sucesso!');
             process.exit(0);
@@ -104,4 +104,4 @@ if (require.main === module) {
         });
 }
 
-export default seedCategories; 
+export default seedProjectCategories; 

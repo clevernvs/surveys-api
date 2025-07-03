@@ -40,7 +40,7 @@ model Project {
   company          Company         @relation(fields: [company_id], references: [id])
   project_type     ProjectType     @relation(fields: [project_type_id], references: [id])
   language         Language        @relation(fields: [language_id], references: [id])
-  category         Category        @relation(fields: [category_id], references: [id])
+  category         ProjectCategory @relation(fields: [category_id], references: [id])
   sample_source    SampleSource    @relation(fields: [sample_source_id], references: [id])
   community        Community       @relation(fields: [community_id], references: [id])
   status           Status          @relation(fields: [status_id], references: [id])
@@ -108,7 +108,7 @@ model Language {
   updated_at DateTime  @updatedAt
 }
 
-model Category {
+model ProjectType {
   id         Int       @id @default(autoincrement())
   name       String
   projects   Project[]
@@ -116,7 +116,7 @@ model Category {
   updated_at DateTime  @updatedAt
 }
 
-model ProjectType {
+model ProjectCategory {
   id         Int       @id @default(autoincrement())
   name       String
   projects   Project[]
