@@ -20,3 +20,13 @@ export const createAnswer = async (req: Request, res: Response) => {
         res.status(500).json({ error: error.message || 'Erro ao criar resposta' });
     }
 };
+
+export const updateAnswer = async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+        const answer = await answerService.update(id, req.body);
+        res.json(answer);
+    } catch (error: any) {
+        res.status(500).json({ error: error.message || 'Erro ao atualizar resposta' });
+    }
+};
