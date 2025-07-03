@@ -157,3 +157,17 @@ model Filter {
   created_at     DateTime        @default(now())
   updated_at     DateTime        @updatedAt
 }
+
+model Gender {
+  id         Int      @id @default(autoincrement())
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model SocialClass {
+  id         Int      @id @default(autoincrement())
+  name       String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
