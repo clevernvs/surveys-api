@@ -22,11 +22,11 @@ export const getAllQuestionnaires = async (_req: Request, res: Response) => {
     }
 };
 
-export const getQuestionnaireById = async (req: Request, res: Response) => {
+export const getQuestionnaireById = async (req: Request, res: Response): Promise<void> => {
     try {
         const id = parseInt(req.params.id);
         if (isNaN(id)) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 error: 'ID inválido',
                 message: 'O ID deve ser um número válido'
@@ -41,7 +41,7 @@ export const getQuestionnaireById = async (req: Request, res: Response) => {
         });
     } catch (error) {
         if (error instanceof Error && error.message === 'Questionário não encontrado') {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 error: 'Questionário não encontrado',
                 message: 'O questionário especificado não existe'
@@ -55,7 +55,7 @@ export const getQuestionnaireById = async (req: Request, res: Response) => {
     }
 };
 
-export const createQuestionnaire = async (req: Request, res: Response) => {
+export const createQuestionnaire = async (req: Request, res: Response): Promise<void> => {
     try {
         const questionnaire = await questionnaireService.create(req.body);
         res.status(201).json({
@@ -65,7 +65,7 @@ export const createQuestionnaire = async (req: Request, res: Response) => {
         });
     } catch (error) {
         if (error instanceof Error && error.message === 'Projeto não encontrado') {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 error: 'Projeto não encontrado',
                 message: 'O projeto especificado não existe'
@@ -79,11 +79,11 @@ export const createQuestionnaire = async (req: Request, res: Response) => {
     }
 };
 
-export const updateQuestionnaire = async (req: Request, res: Response) => {
+export const updateQuestionnaire = async (req: Request, res: Response): Promise<void> => {
     try {
         const id = parseInt(req.params.id);
         if (isNaN(id)) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 error: 'ID inválido',
                 message: 'O ID deve ser um número válido'
@@ -99,14 +99,14 @@ export const updateQuestionnaire = async (req: Request, res: Response) => {
     } catch (error) {
         if (error instanceof Error) {
             if (error.message === 'Questionário não encontrado') {
-                return res.status(404).json({
+                res.status(404).json({
                     success: false,
                     error: 'Questionário não encontrado',
                     message: 'O questionário especificado não existe'
                 });
             }
             if (error.message === 'Projeto não encontrado') {
-                return res.status(404).json({
+                res.status(404).json({
                     success: false,
                     error: 'Projeto não encontrado',
                     message: 'O projeto especificado não existe'
@@ -121,11 +121,11 @@ export const updateQuestionnaire = async (req: Request, res: Response) => {
     }
 };
 
-export const deleteQuestionnaire = async (req: Request, res: Response) => {
+export const deleteQuestionnaire = async (req: Request, res: Response): Promise<void> => {
     try {
         const id = parseInt(req.params.id);
         if (isNaN(id)) {
-            return res.status(400).json({
+            res.status(400).json({
                 success: false,
                 error: 'ID inválido',
                 message: 'O ID deve ser um número válido'
@@ -139,7 +139,7 @@ export const deleteQuestionnaire = async (req: Request, res: Response) => {
         });
     } catch (error) {
         if (error instanceof Error && error.message === 'Questionário não encontrado') {
-            return res.status(404).json({
+            res.status(404).json({
                 success: false,
                 error: 'Questionário não encontrado',
                 message: 'O questionário especificado não existe'
@@ -153,7 +153,7 @@ export const deleteQuestionnaire = async (req: Request, res: Response) => {
     }
 };
 
-export const createTestData = async (_req: Request, res: Response) => {
+export const createTestData = async (_req: Request, res: Response): Promise<void> => {
     try {
         console.log('Criando dados de teste...');
 
