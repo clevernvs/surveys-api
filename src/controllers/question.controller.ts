@@ -36,10 +36,56 @@ export const createQuestion = async (req: Request, res: Response): Promise<void>
                 error: 'Questionário não encontrado',
                 message: 'O questionário especificado não existe'
             });
+            return;
         }
         res.status(500).json({
             success: false,
             error: 'Erro interno do servidor ao criar questão',
+            message: error instanceof Error ? error.message : 'Erro desconhecido'
+        });
+    }
+};
+
+export const updateQuestion = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) {
+            res.status(400).json({
+                success: false,
+                error: 'ID inválido',
+                message: 'O ID deve ser um número válido'
+            });
+            return;
+        }
+
+        const question = await questionService.update(id, req.body);
+        res.json({
+            success: true,
+            data: question,
+            message: 'Questão atualizada com sucesso'
+        });
+    } catch (error) {
+        if (error instanceof Error) {
+            if (error.message === 'Questão não encontrada') {
+                res.status(404).json({
+                    success: false,
+                    error: 'Questão não encontrada',
+                    message: 'A questão especificada não existe'
+                });
+                return;
+            }
+            if (error.message === 'Questionário não encontrado') {
+                res.status(404).json({
+                    success: false,
+                    error: 'Questionário não encontrado',
+                    message: 'O questionário especificado não existe'
+                });
+                return;
+            }
+        }
+        res.status(500).json({
+            success: false,
+            error: 'Erro interno do servidor ao atualizar questão',
             message: error instanceof Error ? error.message : 'Erro desconhecido'
         });
     }

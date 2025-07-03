@@ -66,4 +66,50 @@ export class QuestionService {
             throw error;
         }
     }
+
+    async update(id: number, data: any) {
+        try {
+            // Verifica se a questão existe
+            const existingQuestion = await prisma.question.findUnique({
+                where: { id }
+            });
+            if (!existingQuestion) {
+                throw new Error('Questão não encontrada');
+            }
+
+            // Se questionnaire_id foi fornecido, verifica se o questionário existe
+            if (data.questionnaire_id) {
+                const questionnaire = await prisma.questionnaire.findUnique({
+                    where: { id: data.questionnaire_id }
+                });
+                if (!questionnaire) {
+                    throw new Error('Questionário não encontrado');
+                }
+            }
+
+            const question = await prisma.question.update({
+                where: { id },
+                data: {
+                    title: data.title,
+                    question_type_id: data.question_type_id,
+                    required: data.required,
+                    questionnaire_id: data.questionnaire_id
+                },
+                include: {
+                    questionnaire: {
+                        include: {
+                            project: {
+                                include: {
+                                    company: true
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            return question;
+        } catch (error) {
+            throw error;
+        }
+    }
 }
