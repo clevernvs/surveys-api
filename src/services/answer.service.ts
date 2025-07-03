@@ -86,4 +86,20 @@ export class AnswerService {
             throw new Error('Erro ao deletar resposta do banco de dados');
         }
     }
+
+    async findById(id: number) {
+        try {
+            const answer = await prisma.answer.findUnique({ where: { id } });
+            if (!answer) {
+                throw new Error('Resposta não encontrada');
+            }
+            return answer;
+        } catch (error: any) {
+            console.error('Erro ao buscar resposta por ID:', error);
+            if (error.message) {
+                throw new Error(error.message);
+            }
+            throw new Error('Erro ao buscar resposta no banco de dados');
+        }
+    }
 }
