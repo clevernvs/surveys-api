@@ -32,6 +32,38 @@ export class QuestionService {
         }
     }
 
+    async findById(id: number) {
+        try {
+            const question = await prisma.question.findUnique({
+                where: { id },
+                include: {
+                    questionnaire: {
+                        include: {
+                            project: {
+                                include: {
+                                    company: true
+                                }
+                            }
+                        }
+                    },
+                    answers: {
+                        orderBy: {
+                            numeric_order: 'asc'
+                        }
+                    }
+                }
+            });
+
+            if (!question) {
+                throw new Error('Questão não encontrada');
+            }
+
+            return question;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async create(data: any) {
         try {
             // Verifica se o questionário existe

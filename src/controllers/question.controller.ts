@@ -21,6 +21,41 @@ export const getAllQuestions = async (_req: Request, res: Response) => {
     }
 };
 
+export const getQuestionById = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const id = parseInt(req.params.id);
+        if (isNaN(id)) {
+            res.status(400).json({
+                success: false,
+                error: 'ID inválido',
+                message: 'O ID deve ser um número válido'
+            });
+            return;
+        }
+
+        const question = await questionService.findById(id);
+        res.json({
+            success: true,
+            data: question,
+            message: 'Questão encontrada com sucesso'
+        });
+    } catch (error) {
+        if (error instanceof Error && error.message === 'Questão não encontrada') {
+            res.status(404).json({
+                success: false,
+                error: 'Questão não encontrada',
+                message: 'A questão especificada não existe'
+            });
+            return;
+        }
+        res.status(500).json({
+            success: false,
+            error: 'Erro interno do servidor ao buscar questão',
+            message: error instanceof Error ? error.message : 'Erro desconhecido'
+        });
+    }
+};
+
 export const createQuestion = async (req: Request, res: Response): Promise<void> => {
     try {
         const question = await questionService.create(req.body);
