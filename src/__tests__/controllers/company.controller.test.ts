@@ -1,5 +1,17 @@
 import { Request, Response } from 'express';
-import { CompanyService } from '../../services/company.service';
+
+const mockService = {
+    findAll: jest.fn(),
+    findById: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn(),
+};
+
+jest.mock('../../services/company.service', () => ({
+    CompanyService: jest.fn().mockImplementation(() => mockService),
+}));
+
 import {
     getAllCompanies,
     getCompanyById,
@@ -7,11 +19,6 @@ import {
     updateCompany,
     deleteCompany,
 } from '../../controllers/company.controller';
-
-// Mock do CompanyService
-jest.mock('../../services/company.service');
-
-const mockCompanyService = CompanyService as jest.MockedClass<typeof CompanyService>;
 
 describe('CompanyController', () => {
     let mockRequest: Partial<Request>;
@@ -31,13 +38,6 @@ describe('CompanyController', () => {
 
         // Reset dos mocks
         jest.clearAllMocks();
-
-        // Mock das instâncias do service
-        mockCompanyService.prototype.findAll = jest.fn();
-        mockCompanyService.prototype.findById = jest.fn();
-        mockCompanyService.prototype.create = jest.fn();
-        mockCompanyService.prototype.update = jest.fn();
-        mockCompanyService.prototype.delete = jest.fn();
     });
 
     describe('getAllCompanies', () => {
@@ -47,22 +47,20 @@ describe('CompanyController', () => {
                 { id: 2, name: 'Empresa B' },
             ];
 
-            const mockFindAll = jest.fn().mockResolvedValue(mockCompanies);
-            mockCompanyService.prototype.findAll = mockFindAll;
+            mockService.findAll.mockResolvedValue(mockCompanies);
 
             await getAllCompanies(mockRequest as Request, mockResponse as Response);
 
-            expect(mockFindAll).toHaveBeenCalledTimes(1);
+            expect(mockService.findAll).toHaveBeenCalledTimes(1);
             expect(mockJson).toHaveBeenCalledWith(mockCompanies);
         });
 
         it('deve retornar erro 500 quando falhar', async () => {
-            const mockFindAll = jest.fn().mockRejectedValue(new Error('Erro de banco'));
-            mockCompanyService.prototype.findAll = mockFindAll;
+            mockService.findAll.mockRejectedValue(new Error('Erro de banco'));
 
             await getAllCompanies(mockRequest as Request, mockResponse as Response);
 
-            expect(mockFindAll).toHaveBeenCalledTimes(1);
+            expect(mockService.findAll).toHaveBeenCalledTimes(1);
             expect(mockStatus).toHaveBeenCalledWith(500);
             expect(mockJson).toHaveBeenCalledWith({ error: 'Erro ao buscar empresas' });
         });
@@ -71,8 +69,7 @@ describe('CompanyController', () => {
     describe('getCompanyById', () => {
         it('deve retornar empresa quando encontrada', async () => {
             const mockCompany = { id: 1, name: 'Empresa A' };
-            const mockFindById = jest.fn().mockResolvedValue(mockCompany);
-            mockCompanyService.prototype.findById = mockFindById;
+            mockService.findById.mockResolvedValue(mockCompany);
 
             mockRequest = {
                 params: { id: '1' },
@@ -80,13 +77,12 @@ describe('CompanyController', () => {
 
             await getCompanyById(mockRequest as Request, mockResponse as Response);
 
-            expect(mockFindById).toHaveBeenCalledWith(1);
+            expect(mockService.findById).toHaveBeenCalledWith(1);
             expect(mockJson).toHaveBeenCalledWith(mockCompany);
         });
 
         it('deve retornar erro 404 quando empresa não encontrada', async () => {
-            const mockFindById = jest.fn().mockResolvedValue(null);
-            mockCompanyService.prototype.findById = mockFindById;
+            mockService.findById.mockResolvedValue(null);
 
             mockRequest = {
                 params: { id: '999' },
@@ -94,14 +90,13 @@ describe('CompanyController', () => {
 
             await getCompanyById(mockRequest as Request, mockResponse as Response);
 
-            expect(mockFindById).toHaveBeenCalledWith(999);
+            expect(mockService.findById).toHaveBeenCalledWith(999);
             expect(mockStatus).toHaveBeenCalledWith(404);
             expect(mockJson).toHaveBeenCalledWith({ error: 'Empresa não encontrada' });
         });
 
         it('deve retornar erro 500 quando falhar', async () => {
-            const mockFindById = jest.fn().mockRejectedValue(new Error('Erro de banco'));
-            mockCompanyService.prototype.findById = mockFindById;
+            mockService.findById.mockRejectedValue(new Error('Erro de banco'));
 
             mockRequest = {
                 params: { id: '1' },
@@ -109,7 +104,7 @@ describe('CompanyController', () => {
 
             await getCompanyById(mockRequest as Request, mockResponse as Response);
 
-            expect(mockFindById).toHaveBeenCalledWith(1);
+            expect(mockService.findById).toHaveBeenCalledWith(1);
             expect(mockStatus).toHaveBeenCalledWith(500);
             expect(mockJson).toHaveBeenCalledWith({ error: 'Erro ao buscar empresa' });
         });
@@ -119,8 +114,7 @@ describe('CompanyController', () => {
         it('deve criar empresa com sucesso', async () => {
             const companyData = { name: 'Nova Empresa' };
             const mockCreatedCompany = { id: 1, name: 'Nova Empresa' };
-            const mockCreate = jest.fn().mockResolvedValue(mockCreatedCompany);
-            mockCompanyService.prototype.create = mockCreate;
+            mockService.create.mockResolvedValue(mockCreatedCompany);
 
             mockRequest = {
                 body: companyData,
@@ -128,7 +122,7 @@ describe('CompanyController', () => {
 
             await createCompany(mockRequest as Request, mockResponse as Response);
 
-            expect(mockCreate).toHaveBeenCalledWith(companyData);
+            expect(mockService.create).toHaveBeenCalledWith(companyData);
             expect(mockStatus).toHaveBeenCalledWith(201);
             expect(mockJson).toHaveBeenCalledWith(mockCreatedCompany);
         });
@@ -136,8 +130,7 @@ describe('CompanyController', () => {
         it('deve retornar erro 500 quando falhar', async () => {
             const companyData = { name: 'Nova Empresa' };
             const error = new Error('Erro de validação');
-            const mockCreate = jest.fn().mockRejectedValue(error);
-            mockCompanyService.prototype.create = mockCreate;
+            mockService.create.mockRejectedValue(error);
 
             mockRequest = {
                 body: companyData,
@@ -145,7 +138,7 @@ describe('CompanyController', () => {
 
             await createCompany(mockRequest as Request, mockResponse as Response);
 
-            expect(mockCreate).toHaveBeenCalledWith(companyData);
+            expect(mockService.create).toHaveBeenCalledWith(companyData);
             expect(mockStatus).toHaveBeenCalledWith(500);
             expect(mockJson).toHaveBeenCalledWith({
                 error: 'Erro ao criar empresa',
@@ -158,8 +151,7 @@ describe('CompanyController', () => {
         it('deve atualizar empresa com sucesso', async () => {
             const companyData = { name: 'Empresa Atualizada' };
             const mockUpdatedCompany = { id: 1, name: 'Empresa Atualizada' };
-            const mockUpdate = jest.fn().mockResolvedValue(mockUpdatedCompany);
-            mockCompanyService.prototype.update = mockUpdate;
+            mockService.update.mockResolvedValue(mockUpdatedCompany);
 
             mockRequest = {
                 params: { id: '1' },
@@ -168,7 +160,7 @@ describe('CompanyController', () => {
 
             await updateCompany(mockRequest as Request, mockResponse as Response);
 
-            expect(mockUpdate).toHaveBeenCalledWith(1, companyData);
+            expect(mockService.update).toHaveBeenCalledWith(1, companyData);
             expect(mockStatus).toHaveBeenCalledWith(200);
             expect(mockJson).toHaveBeenCalledWith(mockUpdatedCompany);
         });
@@ -176,8 +168,7 @@ describe('CompanyController', () => {
         it('deve retornar erro 404 quando empresa não encontrada', async () => {
             const companyData = { name: 'Empresa Atualizada' };
             const error = new Error('Empresa não encontrada');
-            const mockUpdate = jest.fn().mockRejectedValue(error);
-            mockCompanyService.prototype.update = mockUpdate;
+            mockService.update.mockRejectedValue(error);
 
             mockRequest = {
                 params: { id: '999' },
@@ -186,7 +177,7 @@ describe('CompanyController', () => {
 
             await updateCompany(mockRequest as Request, mockResponse as Response);
 
-            expect(mockUpdate).toHaveBeenCalledWith(999, companyData);
+            expect(mockService.update).toHaveBeenCalledWith(999, companyData);
             expect(mockStatus).toHaveBeenCalledWith(404);
             expect(mockJson).toHaveBeenCalledWith({ error: 'Empresa não encontrada' });
         });
@@ -194,8 +185,7 @@ describe('CompanyController', () => {
         it('deve retornar erro 500 quando falhar', async () => {
             const companyData = { name: 'Empresa Atualizada' };
             const error = new Error('Erro de banco');
-            const mockUpdate = jest.fn().mockRejectedValue(error);
-            mockCompanyService.prototype.update = mockUpdate;
+            mockService.update.mockRejectedValue(error);
 
             mockRequest = {
                 params: { id: '1' },
@@ -204,7 +194,7 @@ describe('CompanyController', () => {
 
             await updateCompany(mockRequest as Request, mockResponse as Response);
 
-            expect(mockUpdate).toHaveBeenCalledWith(1, companyData);
+            expect(mockService.update).toHaveBeenCalledWith(1, companyData);
             expect(mockStatus).toHaveBeenCalledWith(500);
             expect(mockJson).toHaveBeenCalledWith({
                 error: 'Erro ao atualizar empresa',
@@ -215,11 +205,10 @@ describe('CompanyController', () => {
 
     describe('deleteCompany', () => {
         it('deve deletar empresa com sucesso', async () => {
-            const mockDelete = jest.fn().mockResolvedValue({
+            mockService.delete.mockResolvedValue({
                 success: true,
                 message: 'Empresa deletada com sucesso',
             });
-            mockCompanyService.prototype.delete = mockDelete;
 
             mockRequest = {
                 params: { id: '1' },
@@ -227,15 +216,14 @@ describe('CompanyController', () => {
 
             await deleteCompany(mockRequest as Request, mockResponse as Response);
 
-            expect(mockDelete).toHaveBeenCalledWith(1);
+            expect(mockService.delete).toHaveBeenCalledWith(1);
             expect(mockStatus).toHaveBeenCalledWith(204);
             expect(mockResponse.send).toHaveBeenCalled();
         });
 
         it('deve retornar erro 404 quando empresa não encontrada', async () => {
             const error = new Error('Empresa não encontrada');
-            const mockDelete = jest.fn().mockRejectedValue(error);
-            mockCompanyService.prototype.delete = mockDelete;
+            mockService.delete.mockRejectedValue(error);
 
             mockRequest = {
                 params: { id: '999' },
@@ -243,15 +231,14 @@ describe('CompanyController', () => {
 
             await deleteCompany(mockRequest as Request, mockResponse as Response);
 
-            expect(mockDelete).toHaveBeenCalledWith(999);
+            expect(mockService.delete).toHaveBeenCalledWith(999);
             expect(mockStatus).toHaveBeenCalledWith(404);
             expect(mockJson).toHaveBeenCalledWith({ error: 'Empresa não encontrada' });
         });
 
         it('deve retornar erro 400 quando empresa tem projetos relacionados', async () => {
             const error = new Error('Não é possível deletar a empresa pois possui projetos relacionados');
-            const mockDelete = jest.fn().mockRejectedValue(error);
-            mockCompanyService.prototype.delete = mockDelete;
+            mockService.delete.mockRejectedValue(error);
 
             mockRequest = {
                 params: { id: '1' },
@@ -259,7 +246,7 @@ describe('CompanyController', () => {
 
             await deleteCompany(mockRequest as Request, mockResponse as Response);
 
-            expect(mockDelete).toHaveBeenCalledWith(1);
+            expect(mockService.delete).toHaveBeenCalledWith(1);
             expect(mockStatus).toHaveBeenCalledWith(400);
             expect(mockJson).toHaveBeenCalledWith({
                 error: 'Não é possível deletar a empresa pois possui projetos relacionados'
@@ -268,8 +255,7 @@ describe('CompanyController', () => {
 
         it('deve retornar erro 500 quando falhar', async () => {
             const error = new Error('Erro de banco');
-            const mockDelete = jest.fn().mockRejectedValue(error);
-            mockCompanyService.prototype.delete = mockDelete;
+            mockService.delete.mockRejectedValue(error);
 
             mockRequest = {
                 params: { id: '1' },
@@ -277,7 +263,7 @@ describe('CompanyController', () => {
 
             await deleteCompany(mockRequest as Request, mockResponse as Response);
 
-            expect(mockDelete).toHaveBeenCalledWith(1);
+            expect(mockService.delete).toHaveBeenCalledWith(1);
             expect(mockStatus).toHaveBeenCalledWith(500);
             expect(mockJson).toHaveBeenCalledWith({
                 error: 'Erro ao deletar empresa',
