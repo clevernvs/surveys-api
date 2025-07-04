@@ -3,9 +3,9 @@ import { z } from 'zod';
 // Schema para empresa
 export const CompanySchema = z.object({
     name: z.string()
+        .trim()
         .min(1, 'Nome é obrigatório')
         .max(255, 'Nome deve ter no máximo 255 caracteres')
-        .trim()
 });
 
 // Schema para criação de empresa

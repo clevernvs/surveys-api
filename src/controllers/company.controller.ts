@@ -73,7 +73,7 @@ export const deleteCompany = async (req: Request, res: Response): Promise<void> 
     const { id } = req.params;
 
     try {
-        const result = await companyService.delete(Number(id));
+        await companyService.delete(Number(id));
         res.status(204).send();
     } catch (error: any) {
         console.error('Erro detalhado na exclusão:', error);
