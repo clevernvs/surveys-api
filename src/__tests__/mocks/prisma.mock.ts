@@ -1,5 +1,5 @@
 export const mockPrisma = {
-    company: {
+    client: {
         findMany: jest.fn(),
         findUnique: jest.fn(),
         create: jest.fn(),

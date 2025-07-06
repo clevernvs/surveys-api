@@ -15,9 +15,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Company {
+model Client {
   id         Int       @id @default(autoincrement())
-  name       String    @unique
+  name       String
+  email      String    @unique
   projects   Project[]
   created_at DateTime  @default(now())
   updated_at DateTime  @updatedAt
@@ -36,8 +37,8 @@ model Project {
   sample_size      Int
   start_date       DateTime
   end_date         DateTime
-  company_id       Int
-  company          Company         @relation(fields: [company_id], references: [id])
+  client_id        Int
+  client           Client          @relation(fields: [client_id], references: [id])
   project_type     ProjectType     @relation(fields: [project_type_id], references: [id])
   language         Language        @relation(fields: [language_id], references: [id])
   category         ProjectCategory @relation(fields: [category_id], references: [id])

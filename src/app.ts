@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import dotenvExpand from 'dotenv-expand';
 
-import companyRoutes from './routes/company.routes';
+import clientRoutes from './routes/client.routes';
 import projectRoutes from './routes/project.routes';
 import questionnaireRoutes from './routes/questionnaire.routes';
 import questionRoutes from './routes/question.routes';
@@ -22,7 +22,7 @@ app.get('/', (_req, res) => {
 
 app.get('/test', (_req, res) => { res.send('ok') });
 
-app.use('/api/v2', companyRoutes);
+app.use('/api/v2', clientRoutes);
 app.use('/api/v2', projectRoutes);
 app.use('/api/v2', questionnaireRoutes);
 app.use('/api/v2', questionRoutes);
