@@ -15,15 +15,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum ProjectStatus {
-  DRAFT
-  ACTIVE
-  PAUSED
-  COMPLETED
-  CANCELLED
+model Client {
+  id         Int       @id @default(autoincrement())
+  name       String
+  email      String    @unique
+  projects   Project[]
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
 }
 
-enum QuestionnaireStatus {
+enum ProjectType {
+  MARKET_RESEARCH
+  CUSTOMER_SATISFACTION
+  PRODUCT_DEVELOPMENT
+  BRAND_AWARENESS
+  USER_EXPERIENCE
+  FEEDBACK_COLLECTION
+  SURVEY_RESEARCH
+  OTHER
+}
+
+enum ProjectStatus {
   DRAFT
   ACTIVE
   PAUSED
@@ -42,86 +54,176 @@ enum ProjectCategory {
   OTHER
 }
 
-model Client {
-  id         Int       @id @default(autoincrement())
-  name       String
-  email      String    @unique
-  projects   Project[]
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-}
-
 model Project {
   id               Int             @id @default(autoincrement())
   client_id        Int
-  project_type_id  Int
   language_id      Int
+  project_type     ProjectType     @default(OTHER)
   category         ProjectCategory @default(OTHER)
-  sample_source_id Int
   community_id     Int
+  sample_source_id Int?
   status           ProjectStatus   @default(DRAFT)
-  title            String
+  title            String          @db.VarChar(255)
   description      String
-  sample_size      Int
-  start_date       DateTime
-  end_date         DateTime
-  client           Client          @relation(fields: [client_id], references: [id])
-  project_type     ProjectType     @relation(fields: [project_type_id], references: [id])
-  language         Language        @relation(fields: [language_id], references: [id])
-  sample_source    SampleSource    @relation(fields: [sample_source_id], references: [id])
-  community        Community       @relation(fields: [community_id], references: [id])
+  sample_size      Int             @db.SmallInt
   questionnaires   Questionnaire[]
   created_at       DateTime        @default(now())
   updated_at       DateTime        @updatedAt
+  client           Client          @relation(fields: [client_id], references: [id])
+  language         Language        @relation(fields: [language_id], references: [id])
+  community        Community       @relation(fields: [community_id], references: [id])
+  SampleSource     SampleSource?   @relation(fields: [sample_source_id], references: [id])
+}
+
+enum QuestionnaireStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  COMPLETED
+  CANCELLED
 }
 
 model Questionnaire {
-  id                 Int                 @id @default(autoincrement())
-  title              String
-  filter_id          Int
-  randomized_answers Boolean             @default(false)
-  status             QuestionnaireStatus @default(DRAFT)
-  project_id         Int
-  project            Project             @relation(fields: [project_id], references: [id])
-  filter             Filter              @relation(fields: [filter_id], references: [id])
-  questions          Question[]
-  created_at         DateTime            @default(now())
-  updated_at         DateTime            @updatedAt
+  id                   Int                 @id @default(autoincrement())
+  project_id           Int
+  sample_source_id     Int
+  title                String
+  goal                 Int
+  filter_id            Int
+  randomized_questions Boolean             @default(false)
+  status               QuestionnaireStatus @default(DRAFT)
+  start_date           DateTime
+  end_date             DateTime
+  questions            Question[]
+  created_at           DateTime            @default(now())
+  updated_at           DateTime            @updatedAt
+  project              Project             @relation(fields: [project_id], references: [id])
+  sample_source        SampleSource        @relation(fields: [sample_source_id], references: [id])
+  filters              Filter[]            @relation("QuestionnaireFilters")
+}
+
+enum QuestionType {
+  TEXT
+  OPEN_ANSWER
+  SINGLE_CHOICE
+  MULTIPLE_CHOICE
+  GRID
+  RANKING
+  NPS
+  SYMBOL
 }
 
 model Question {
+  id                Int             @id @default(autoincrement())
+  questionnaire_id  Int
+  question_type     QuestionType    @default(TEXT)
+  title             String
+  required          Boolean         @default(false)
+  randomize_answers Boolean         @default(false)
+  answers           Answer[]        @relation("QuestionAnswers")
+  order_index       Int
+  kpi               String?
+  attributes        String?
+  brand             String?
+  product_brand     String?
+  created_at        DateTime        @default(now())
+  updated_at        DateTime        @updatedAt
+  questionnaire     Questionnaire   @relation(fields: [questionnaire_id], references: [id])
+  QuestionMedia     QuestionMedia[]
+}
+
+enum AnswerType {
+  TEXT
+  NUMBER
+  DATE
+  BOOLEAN
+  MULTIPLE_CHOICE
+  SINGLE_CHOICE
+  RATING
+  GRID_COLUMN
+  GRID_ROW
+}
+
+model Answer {
+  id                  Int        @id @default(autoincrement())
+  question_id         Int
+  answer_type         AnswerType @default(TEXT)
+  value               String
+  fixed               Boolean    @default(false)
+  order_index         Int
+  skip_to_question_id Int?
+  question            Question   @relation("QuestionAnswers", fields: [question_id], references: [id])
+  created_at          DateTime   @default(now())
+  updated_at          DateTime   @updatedAt
+}
+
+model Filter {
   id               Int           @id @default(autoincrement())
-  title            String
-  question_type_id Int
-  required         Boolean       @default(false)
   questionnaire_id Int
-  questionnaire    Questionnaire @relation(fields: [questionnaire_id], references: [id])
-  question_type    QuestionType  @relation(fields: [question_type_id], references: [id])
-  answers          Answer[]      @relation("QuestionAnswers")
-  skip_to_answers  Answer[]      @relation("SkipToQuestion")
+  gender_id        Int
+  social_class_id  Int
+  age_range_id     Int
+  country_id       Int
+  city_id          Int
+  state_id         Int
+  quota_id         Int
+  questionnaire    Questionnaire @relation("QuestionnaireFilters", fields: [questionnaire_id], references: [id])
+  gender           Gender        @relation(fields: [gender_id], references: [id])
+  social_class     SocialClass   @relation(fields: [social_class_id], references: [id])
+  age_range        AgeRange      @relation(fields: [age_range_id], references: [id])
+  country          Country       @relation(fields: [country_id], references: [id])
+  city             City          @relation(fields: [city_id], references: [id])
+  state            State         @relation(fields: [state_id], references: [id])
   created_at       DateTime      @default(now())
   updated_at       DateTime      @updatedAt
 }
 
-model Answer {
-  id                  Int       @id @default(autoincrement())
-  title               String
-  question_id         Int
-  fixed               Boolean   @default(false)
-  numeric_order       Int
-  skip_to_question_id Int?
-  question            Question  @relation("QuestionAnswers", fields: [question_id], references: [id])
-  skip_to_question    Question? @relation("SkipToQuestion", fields: [skip_to_question_id], references: [id])
-  created_at          DateTime  @default(now())
-  updated_at          DateTime  @updatedAt
+model Gender {
+  id         Int      @id @default(autoincrement())
+  value      String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Filter     Filter[]
 }
 
-model QuestionType {
-  id         Int        @id @default(autoincrement())
-  name       String
-  questions  Question[]
-  created_at DateTime   @default(now())
-  updated_at DateTime   @updatedAt
+model SocialClass {
+  id         Int      @id @default(autoincrement())
+  value      String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Filter     Filter[]
+}
+
+model AgeRange {
+  id         Int      @id @default(autoincrement())
+  value      String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Filter     Filter[]
+}
+
+model Country {
+  id         Int      @id @default(autoincrement())
+  value      String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Filter     Filter[]
+}
+
+model City {
+  id         Int      @id @default(autoincrement())
+  value      String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Filter     Filter[]
+}
+
+model State {
+  id         Int      @id @default(autoincrement())
+  value      String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  Filter     Filter[]
 }
 
 model Language {
@@ -133,49 +235,41 @@ model Language {
   updated_at DateTime  @updatedAt
 }
 
-model ProjectType {
-  id         Int       @id @default(autoincrement())
-  name       String
-  projects   Project[]
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+enum CommunityStatus {
+  ACTIVE
+  INACTIVE
 }
 
 model Community {
-  id         Int       @id @default(autoincrement())
+  id         Int             @id @default(autoincrement())
   name       String
+  status     CommunityStatus @default(ACTIVE)
   projects   Project[]
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  created_at DateTime        @default(now())
+  updated_at DateTime        @updatedAt
 }
 
 model SampleSource {
-  id         Int       @id @default(autoincrement())
-  name       String
-  projects   Project[]
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
+  id            Int             @id @default(autoincrement())
+  name          String
+  projects      Project[]
+  created_at    DateTime        @default(now())
+  updated_at    DateTime        @updatedAt
+  Questionnaire Questionnaire[]
 }
 
-model Filter {
-  id             Int             @id @default(autoincrement())
-  name           String
-  description    String?
-  questionnaires Questionnaire[]
-  created_at     DateTime        @default(now())
-  updated_at     DateTime        @updatedAt
+enum MediaType {
+  IMAGE
+  VIDEO
+  AUDIO
 }
 
-model Gender {
-  id         Int      @id @default(autoincrement())
-  name       String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-}
-
-model SocialClass {
-  id         Int      @id @default(autoincrement())
-  name       String
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+model QuestionMedia {
+  id          Int       @id @default(autoincrement())
+  question_id Int
+  media_type  MediaType
+  url         String
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
+  question    Question  @relation(fields: [question_id], references: [id])
 }
