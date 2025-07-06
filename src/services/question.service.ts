@@ -7,11 +7,7 @@ export class QuestionService {
                 include: {
                     questionnaire: {
                         include: {
-                            project: {
-                                include: {
-                                    company: true
-                                }
-                            }
+                            project: true
                         }
                     },
                     answers: {
@@ -39,11 +35,7 @@ export class QuestionService {
                 include: {
                     questionnaire: {
                         include: {
-                            project: {
-                                include: {
-                                    company: true
-                                }
-                            }
+                            project: true
                         }
                     },
                     answers: {
@@ -84,11 +76,7 @@ export class QuestionService {
                 include: {
                     questionnaire: {
                         include: {
-                            project: {
-                                include: {
-                                    company: true
-                                }
-                            }
+                            project: true
                         }
                     }
                 }
@@ -130,11 +118,7 @@ export class QuestionService {
                 include: {
                     questionnaire: {
                         include: {
-                            project: {
-                                include: {
-                                    company: true
-                                }
-                            }
+                            project: true
                         }
                     }
                 }

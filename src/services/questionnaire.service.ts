@@ -5,11 +5,7 @@ export class QuestionnaireService {
         try {
             const questionnaires = await prisma.questionnaire.findMany({
                 include: {
-                    project: {
-                        include: {
-                            company: true
-                        }
-                    }
+                    project: true
                 },
                 orderBy: {
                     created_at: 'desc'
@@ -28,11 +24,7 @@ export class QuestionnaireService {
             const questionnaire = await prisma.questionnaire.findUnique({
                 where: { id },
                 include: {
-                    project: {
-                        include: {
-                            company: true
-                        }
-                    }
+                    project: true
                 }
             });
 
@@ -61,7 +53,7 @@ export class QuestionnaireService {
                     title: data.title,
                     filter_id: data.filter_id,
                     randomized_answers: data.randomized_answers,
-                    status_id: data.status_id,
+                    status: data.status,
                     project_id: data.project_id
                 }
             });
@@ -97,7 +89,7 @@ export class QuestionnaireService {
                     title: data.title,
                     filter_id: data.filter_id,
                     randomized_answers: data.randomized_answers,
-                    status_id: data.status_id,
+                    status: data.status,
                     project_id: data.project_id
                 },
                 include: {
