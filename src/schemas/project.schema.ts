@@ -1,5 +1,36 @@
 import { z } from 'zod';
 
+// Enums para validação
+const ProjectTypeEnum = z.enum([
+    'MARKET_RESEARCH',
+    'CUSTOMER_SATISFACTION',
+    'PRODUCT_DEVELOPMENT',
+    'BRAND_AWARENESS',
+    'USER_EXPERIENCE',
+    'FEEDBACK_COLLECTION',
+    'SURVEY_RESEARCH',
+    'OTHER'
+]);
+
+const ProjectCategoryEnum = z.enum([
+    'MARKET_RESEARCH',
+    'CUSTOMER_SATISFACTION',
+    'PRODUCT_DEVELOPMENT',
+    'BRAND_AWARENESS',
+    'USER_EXPERIENCE',
+    'FEEDBACK_COLLECTION',
+    'SURVEY_RESEARCH',
+    'OTHER'
+]);
+
+const ProjectStatusEnum = z.enum([
+    'DRAFT',
+    'ACTIVE',
+    'PAUSED',
+    'COMPLETED',
+    'CANCELLED'
+]);
+
 // Schema base para projeto
 export const ProjectSchema = z.object({
     title: z.string()
@@ -10,82 +41,43 @@ export const ProjectSchema = z.object({
         .min(1, 'Descrição é obrigatória')
         .max(1000, 'Descrição deve ter no máximo 1000 caracteres'),
 
-    project_type_id: z.number()
-        .int('ID do tipo de projeto deve ser um número inteiro')
-        .positive('ID do tipo de projeto deve ser positivo'),
+    project_type: ProjectTypeEnum
+        .default('OTHER'),
 
     language_id: z.number()
         .int('ID do idioma deve ser um número inteiro')
         .positive('ID do idioma deve ser positivo'),
 
-    category_id: z.number()
-        .int('ID da categoria deve ser um número inteiro')
-        .positive('ID da categoria deve ser positivo'),
-
-    sample_source_id: z.number()
-        .int('ID da fonte da amostra deve ser um número inteiro')
-        .positive('ID da fonte da amostra deve ser positivo'),
+    category: ProjectCategoryEnum
+        .default('OTHER'),
 
     community_id: z.number()
         .int('ID da comunidade deve ser um número inteiro')
         .positive('ID da comunidade deve ser positivo'),
 
-    status_id: z.number()
-        .int('ID do status deve ser um número inteiro')
-        .positive('ID do status deve ser positivo'),
+    sample_source_id: z.number()
+        .int('ID da fonte da amostra deve ser um número inteiro')
+        .positive('ID da fonte da amostra deve ser positivo')
+        .optional(),
+
+    status: ProjectStatusEnum
+        .default('DRAFT'),
 
     sample_size: z.number()
         .int('Tamanho da amostra deve ser um número inteiro')
         .min(1, 'Tamanho da amostra deve ser pelo menos 1')
-        .max(100000, 'Tamanho da amostra deve ser no máximo 100.000'),
+        .max(32767, 'Tamanho da amostra deve ser no máximo 32.767'),
 
-    start_date: z.string()
-        .min(1, 'Data de início é obrigatória')
-        .refine((date) => {
-            const parsedDate = new Date(date);
-            return !isNaN(parsedDate.getTime());
-        }, 'Data de início deve ser uma data válida (YYYY-MM-DD)'),
-
-    end_date: z.string()
-        .min(1, 'Data de fim é obrigatória')
-        .refine((date) => {
-            const parsedDate = new Date(date);
-            return !isNaN(parsedDate.getTime());
-        }, 'Data de fim deve ser uma data válida (YYYY-MM-DD)'),
-
-    company_id: z.number()
-        .int('ID da empresa deve ser um número inteiro')
-        .positive('ID da empresa deve ser positivo')
+    client_id: z.number()
+        .int('ID do cliente deve ser um número inteiro')
+        .positive('ID do cliente deve ser positivo')
 });
 
-// Schema para criação de projeto (com validação de datas)
-export const CreateProjectSchema = ProjectSchema.refine(
-    (data) => {
-        const startDate = new Date(data.start_date);
-        const endDate = new Date(data.end_date);
-        return endDate > startDate;
-    },
-    {
-        message: 'Data de fim deve ser posterior à data de início',
-        path: ['end_date']
-    }
-);
+// Schema para criação de projeto
+export const CreateProjectSchema = ProjectSchema;
 
 // Schema para atualização de projeto (campos opcionais)
-export const UpdateProjectSchema = ProjectSchema.partial().refine(
-    (data) => {
-        if (data.start_date && data.end_date) {
-            const startDate = new Date(data.start_date);
-            const endDate = new Date(data.end_date);
-            return endDate > startDate;
-        }
-        return true;
-    },
-    {
-        message: 'Data de fim deve ser posterior à data de início',
-        path: ['end_date']
-    }
-);
+export const UpdateProjectSchema = ProjectSchema.partial();
 
 // Schema para ID de projeto
 export const ProjectIdSchema = z.object({

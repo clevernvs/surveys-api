@@ -62,8 +62,8 @@ export const updateProject = async (req: Request, res: Response): Promise<void> 
             return;
         }
 
-        if (error.message === 'Empresa não encontrada') {
-            res.status(400).json({ error: 'Empresa não encontrada' });
+        if (error.message === 'Cliente não encontrado') {
+            res.status(400).json({ error: 'Cliente não encontrado' });
             return;
         }
 

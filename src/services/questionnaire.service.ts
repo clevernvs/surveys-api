@@ -5,7 +5,9 @@ export class QuestionnaireService {
         try {
             const questionnaires = await prisma.questionnaire.findMany({
                 include: {
-                    project: true
+                    project: true,
+                    sample_source: true,
+                    filters: true
                 },
                 orderBy: {
                     created_at: 'desc'
@@ -24,7 +26,9 @@ export class QuestionnaireService {
             const questionnaire = await prisma.questionnaire.findUnique({
                 where: { id },
                 include: {
-                    project: true
+                    project: true,
+                    sample_source: true,
+                    filters: true
                 }
             });
 
@@ -51,9 +55,13 @@ export class QuestionnaireService {
             const questionnaire = await prisma.questionnaire.create({
                 data: {
                     title: data.title,
+                    sample_source_id: data.sample_source_id,
+                    goal: data.goal,
                     filter_id: data.filter_id,
-                    randomized_answers: data.randomized_answers,
+                    randomized_questions: data.randomized_questions,
                     status: data.status,
+                    start_date: new Date(data.start_date),
+                    end_date: new Date(data.end_date),
                     project_id: data.project_id
                 }
             });
@@ -87,17 +95,19 @@ export class QuestionnaireService {
                 where: { id },
                 data: {
                     title: data.title,
+                    sample_source_id: data.sample_source_id,
+                    goal: data.goal,
                     filter_id: data.filter_id,
-                    randomized_answers: data.randomized_answers,
+                    randomized_questions: data.randomized_questions,
                     status: data.status,
+                    start_date: data.start_date ? new Date(data.start_date) : undefined,
+                    end_date: data.end_date ? new Date(data.end_date) : undefined,
                     project_id: data.project_id
                 },
                 include: {
-                    project: {
-                        include: {
-                            company: true
-                        }
-                    }
+                    project: true,
+                    sample_source: true,
+                    filters: true
                 }
             });
             return questionnaire;

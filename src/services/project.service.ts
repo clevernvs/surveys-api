@@ -5,7 +5,10 @@ export class ProjectService {
         try {
             const projects = await prisma.project.findMany({
                 include: {
-                    company: true
+                    client: true,
+                    language: true,
+                    community: true,
+                    SampleSource: true
                 }
             });
 
@@ -21,7 +24,10 @@ export class ProjectService {
             const project = await prisma.project.findUnique({
                 where: { id },
                 include: {
-                    company: true
+                    client: true,
+                    language: true,
+                    community: true,
+                    SampleSource: true
                 }
             });
 
@@ -39,36 +45,37 @@ export class ProjectService {
     async create(data: any) {
         try {
             // Validações básicas
-            if (!data.title || !data.description || !data.company_id) {
-                throw new Error('Título, descrição e company_id são obrigatórios');
+            if (!data.title || !data.description || !data.client_id) {
+                throw new Error('Título, descrição e client_id são obrigatórios');
             }
 
-            // Validar se a company existe
-            const company = await prisma.company.findUnique({
-                where: { id: data.company_id }
+            // Validar se o client existe
+            const client = await prisma.client.findUnique({
+                where: { id: data.client_id }
             });
 
-            if (!company) {
-                throw new Error('Empresa não encontrada');
+            if (!client) {
+                throw new Error('Cliente não encontrado');
             }
 
             const project = await prisma.project.create({
                 data: {
                     title: data.title,
                     description: data.description,
-                    project_type_id: data.project_type_id,
+                    project_type: data.project_type,
                     language_id: data.language_id,
-                    category_id: data.category_id,
+                    category: data.category,
                     sample_source_id: data.sample_source_id,
                     community_id: data.community_id,
-                    status_id: data.status_id,
+                    status: data.status,
                     sample_size: data.sample_size,
-                    start_date: new Date(data.start_date),
-                    end_date: new Date(data.end_date),
-                    company_id: data.company_id
+                    client_id: data.client_id
                 },
                 include: {
-                    company: true
+                    client: true,
+                    language: true,
+                    community: true,
+                    SampleSource: true
                 }
             });
 
@@ -105,17 +112,17 @@ export class ProjectService {
             }
 
             // Validações básicas
-            if (!data.title || !data.description || !data.company_id) {
-                throw new Error('Título, descrição e company_id são obrigatórios');
+            if (!data.title || !data.description || !data.client_id) {
+                throw new Error('Título, descrição e client_id são obrigatórios');
             }
 
-            // Validar se a company existe
-            const company = await prisma.company.findUnique({
-                where: { id: data.company_id }
+            // Validar se o client existe
+            const client = await prisma.client.findUnique({
+                where: { id: data.client_id }
             });
 
-            if (!company) {
-                throw new Error('Empresa não encontrada');
+            if (!client) {
+                throw new Error('Cliente não encontrado');
             }
 
             const project = await prisma.project.update({
@@ -123,19 +130,20 @@ export class ProjectService {
                 data: {
                     title: data.title,
                     description: data.description,
-                    project_type_id: data.project_type_id,
+                    project_type: data.project_type,
                     language_id: data.language_id,
-                    category_id: data.category_id,
+                    category: data.category,
                     sample_source_id: data.sample_source_id,
                     community_id: data.community_id,
-                    status_id: data.status_id,
+                    status: data.status,
                     sample_size: data.sample_size,
-                    start_date: new Date(data.start_date),
-                    end_date: new Date(data.end_date),
-                    company_id: data.company_id
+                    client_id: data.client_id
                 },
                 include: {
-                    company: true
+                    client: true,
+                    language: true,
+                    community: true,
+                    SampleSource: true
                 }
             });
 

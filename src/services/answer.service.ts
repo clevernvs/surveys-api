@@ -15,10 +15,11 @@ export class AnswerService {
         try {
             const answer = await prisma.answer.create({
                 data: {
-                    title: data.title,
                     question_id: data.question_id,
+                    answer_type: data.answer_type,
+                    value: data.value,
                     fixed: data.fixed ?? false,
-                    numeric_order: data.numeric_order,
+                    order_index: data.order_index,
                     skip_to_question_id: data.skip_to_question_id ?? null,
                 }
             });
@@ -44,10 +45,11 @@ export class AnswerService {
             const answer = await prisma.answer.update({
                 where: { id },
                 data: {
-                    title: data.title,
                     question_id: data.question_id,
+                    answer_type: data.answer_type,
+                    value: data.value,
                     fixed: data.fixed ?? false,
-                    numeric_order: data.numeric_order,
+                    order_index: data.order_index,
                     skip_to_question_id: data.skip_to_question_id ?? null,
                 }
             });
