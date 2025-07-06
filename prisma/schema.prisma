@@ -31,6 +31,17 @@ enum QuestionnaireStatus {
   CANCELLED
 }
 
+enum ProjectCategory {
+  MARKET_RESEARCH
+  CUSTOMER_SATISFACTION
+  PRODUCT_DEVELOPMENT
+  BRAND_AWARENESS
+  USER_EXPERIENCE
+  FEEDBACK_COLLECTION
+  SURVEY_RESEARCH
+  OTHER
+}
+
 model Client {
   id         Int       @id @default(autoincrement())
   name       String
@@ -45,7 +56,7 @@ model Project {
   client_id        Int
   project_type_id  Int
   language_id      Int
-  category_id      Int
+  category         ProjectCategory @default(OTHER)
   sample_source_id Int
   community_id     Int
   status           ProjectStatus   @default(DRAFT)
@@ -57,7 +68,6 @@ model Project {
   client           Client          @relation(fields: [client_id], references: [id])
   project_type     ProjectType     @relation(fields: [project_type_id], references: [id])
   language         Language        @relation(fields: [language_id], references: [id])
-  category         ProjectCategory @relation(fields: [category_id], references: [id])
   sample_source    SampleSource    @relation(fields: [sample_source_id], references: [id])
   community        Community       @relation(fields: [community_id], references: [id])
   questionnaires   Questionnaire[]
@@ -124,14 +134,6 @@ model Language {
 }
 
 model ProjectType {
-  id         Int       @id @default(autoincrement())
-  name       String
-  projects   Project[]
-  created_at DateTime  @default(now())
-  updated_at DateTime  @updatedAt
-}
-
-model ProjectCategory {
   id         Int       @id @default(autoincrement())
   name       String
   projects   Project[]
