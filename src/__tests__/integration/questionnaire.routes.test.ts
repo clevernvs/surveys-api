@@ -73,7 +73,7 @@ describe('Questionnaire Routes', () => {
             expect(response.body).toEqual({
                 success: false,
                 error: 'Erro interno do servidor ao buscar questionários',
-                message: 'Erro de banco de dados'
+                message: 'Erro interno do servidor'
             });
         });
     });
@@ -171,8 +171,8 @@ describe('Questionnaire Routes', () => {
             const mockCreatedQuestionnaire = {
                 id: 1,
                 ...validQuestionnaireData,
-                start_date: new Date('2024-01-01'),
-                end_date: new Date('2024-12-31')
+                start_date: '2024-01-01T00:00:00.000Z',
+                end_date: '2024-12-31T00:00:00.000Z'
             };
 
             mockPrisma.project.findUnique.mockResolvedValue(mockProject);

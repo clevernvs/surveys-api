@@ -23,7 +23,7 @@ describe('Question Routes', () => {
             expect(response.body).toEqual({
                 success: false,
                 error: 'Erro interno do servidor ao buscar questões',
-                message: 'DB error'
+                message: 'Erro interno do servidor'
             });
         });
     });

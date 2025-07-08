@@ -1,7 +1,4 @@
-import request from 'supertest';
-import express from 'express';
-
-// Mock do ClientService
+// Mock do ClientService antes de qualquer importação
 const mockService = {
     findAll: jest.fn(),
     findById: jest.fn(),
@@ -16,10 +13,12 @@ jest.mock('../../services/client.service', () => ({
 
 // Mock do middleware de validação
 jest.mock('../../middleware/zod-validation.middleware', () => ({
-    validateZod: jest.fn(() => (req: any, res: any, next: any) => next()),
-    validateParams: jest.fn(() => (req: any, res: any, next: any) => next()),
+    validateZod: jest.fn(() => (_req: any, _res: any, next: any) => next()),
+    validateParams: jest.fn(() => (_req: any, _res: any, next: any) => next()),
 }));
 
+import request from 'supertest';
+import express from 'express';
 import clientRoutes from '../../routes/client.routes';
 
 const app = express();
@@ -111,7 +110,7 @@ describe('Client Routes', () => {
 
         it('deve retornar erro 409 para email duplicado', async () => {
             const clientData = { name: 'Cliente', email: 'existente@test.com' };
-            mockService.create.mockRejectedValue(new Error('Já existe um cliente com esse email'));
+            mockService.create.mockRejectedValueOnce(new Error('Já existe um cliente com esse email'));
 
             const response = await request(app)
                 .post('/api/v2/clients')

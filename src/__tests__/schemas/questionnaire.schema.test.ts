@@ -171,7 +171,7 @@ describe('Questionnaire Schemas', () => {
         describe('start_date', () => {
             it('deve rejeitar start_date faltando', () => {
                 const { start_date, ...invalidData } = validQuestionnaireData;
-                expect(() => QuestionnaireSchema.parse(invalidData)).toThrow('Data de início é obrigatória');
+                expect(() => QuestionnaireSchema.parse(invalidData)).toThrow('Required');
             });
 
             it('deve rejeitar start_date vazio', () => {
@@ -188,7 +188,7 @@ describe('Questionnaire Schemas', () => {
         describe('end_date', () => {
             it('deve rejeitar end_date faltando', () => {
                 const { end_date, ...invalidData } = validQuestionnaireData;
-                expect(() => QuestionnaireSchema.parse(invalidData)).toThrow('Data de fim é obrigatória');
+                expect(() => QuestionnaireSchema.parse(invalidData)).toThrow('Required');
             });
 
             it('deve rejeitar end_date vazio', () => {

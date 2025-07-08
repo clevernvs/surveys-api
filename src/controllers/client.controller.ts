@@ -37,10 +37,11 @@ export const createClient = async (req: Request, res: Response): Promise<void> =
         const client = await clientService.create(clientData);
         res.status(201).json(client);
     } catch (error: any) {
-        if (error.message.includes('obrigatório') || error.message.includes('válido')) {
-            res.status(400).json({ error: error.message });
-        } else if (error.message.includes('já existe')) {
-            res.status(409).json({ error: error.message });
+        const message = error?.message || error?.toString?.() || String(error);
+        if (message.includes('obrigatório') || message.includes('válido')) {
+            res.status(400).json({ error: message });
+        } else if (message.toLowerCase().includes('já existe')) {
+            res.status(409).json({ error: message });
         } else {
             res.status(500).json({ error: 'Erro ao criar cliente' });
         }
@@ -55,12 +56,13 @@ export const updateClient = async (req: Request, res: Response): Promise<void> =
         const client = await clientService.update(Number(id), clientData);
         res.json(client);
     } catch (error: any) {
-        if (error.message.includes('não encontrado')) {
-            res.status(404).json({ error: error.message });
-        } else if (error.message.includes('obrigatório') || error.message.includes('válido')) {
-            res.status(400).json({ error: error.message });
-        } else if (error.message.includes('já existe')) {
-            res.status(409).json({ error: error.message });
+        const message = error?.message || error?.toString?.() || String(error);
+        if (message.includes('não encontrado')) {
+            res.status(404).json({ error: message });
+        } else if (message.includes('obrigatório') || message.includes('válido')) {
+            res.status(400).json({ error: message });
+        } else if (message.toLowerCase().includes('já existe')) {
+            res.status(409).json({ error: message });
         } else {
             res.status(500).json({ error: 'Erro ao atualizar cliente' });
         }
