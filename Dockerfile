@@ -8,6 +8,9 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 3000
+# Gere o Prisma Client apontando para o schema correto
+RUN npx prisma generate --schema=./prisma/schema.prisma
 
-CMD [ "npm", "run", "dev" ]
+EXPOSE 3001
+
+CMD npx prisma generate --schema=./prisma/schema.prisma && npm run dev
