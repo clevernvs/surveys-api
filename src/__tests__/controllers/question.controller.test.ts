@@ -1,4 +1,18 @@
 import { Request, Response } from 'express';
+
+// Mock do service antes de importar o controller
+const mockQuestionServiceInstance = {
+    findAll: jest.fn(),
+    findById: jest.fn(),
+    create: jest.fn(),
+    update: jest.fn(),
+    delete: jest.fn()
+};
+
+jest.mock('../../services/question.service', () => ({
+    QuestionService: jest.fn().mockImplementation(() => mockQuestionServiceInstance)
+}));
+
 import {
     getAllQuestions,
     getQuestionById,
@@ -7,27 +21,19 @@ import {
     deleteQuestion
 } from '../../controllers/question.controller';
 
-jest.mock('../../services/question.service');
-const mockQuestionServiceInstance = {
-    findAll: jest.fn(),
-    findById: jest.fn(),
-    create: jest.fn(),
-    update: jest.fn(),
-    delete: jest.fn()
-};
-jest.mocked(require('../../services/question.service').QuestionService).mockImplementation(() => mockQuestionServiceInstance);
-
 describe('QuestionController', () => {
     let mockRequest: Partial<Request>;
     let mockResponse: Partial<Response>;
     let mockJson: jest.Mock;
     let mockStatus: jest.Mock;
+    let mockSend: jest.Mock;
 
     beforeEach(() => {
         mockJson = jest.fn().mockReturnThis();
         mockStatus = jest.fn().mockReturnThis();
+        mockSend = jest.fn().mockReturnThis();
         mockRequest = {};
-        mockResponse = { json: mockJson, status: mockStatus };
+        mockResponse = { json: mockJson, status: mockStatus, send: mockSend };
         jest.clearAllMocks();
     });
 
