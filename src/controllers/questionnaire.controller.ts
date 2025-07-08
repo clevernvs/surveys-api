@@ -29,6 +29,7 @@ export const getQuestionnaireById = async (req: Request, res: Response): Promise
                 error: 'ID inválido',
                 message: 'O ID deve ser um número válido'
             });
+            return;
         }
 
         const questionnaire = await questionnaireService.findById(id);
@@ -86,6 +87,7 @@ export const updateQuestionnaire = async (req: Request, res: Response): Promise<
                 error: 'ID inválido',
                 message: 'O ID deve ser um número válido'
             });
+            return;
         }
 
         const questionnaire = await questionnaireService.update(id, req.body);
@@ -128,6 +130,7 @@ export const deleteQuestionnaire = async (req: Request, res: Response): Promise<
                 error: 'ID inválido',
                 message: 'O ID deve ser um número válido'
             });
+            return;
         }
 
         const result = await questionnaireService.delete(id);
