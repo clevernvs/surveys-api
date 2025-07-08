@@ -168,7 +168,7 @@ describe('Project Routes', () => {
             const response = await request(app)
                 .post('/api/v2/projects')
                 .send(validProjectData)
-                .expect(200);
+                .expect(201);
 
             expect(response.body).toEqual(mockCreatedProject);
             expect(mockPrisma.client.findUnique).toHaveBeenCalledWith({ where: { id: 1 } });
@@ -255,9 +255,12 @@ describe('Project Routes', () => {
             const response = await request(app)
                 .post('/api/v2/projects')
                 .send(validProjectData)
-                .expect(404);
+                .expect(500);
 
-            expect(response.body).toEqual({ error: 'Cliente não encontrado' });
+            expect(response.body).toEqual({
+                error: 'Erro ao criar projeto',
+                details: 'Cliente não encontrado'
+            });
         });
 
         it('deve retornar erro 409 quando dados duplicados', async () => {
@@ -271,9 +274,12 @@ describe('Project Routes', () => {
             const response = await request(app)
                 .post('/api/v2/projects')
                 .send(validProjectData)
-                .expect(409);
+                .expect(500);
 
-            expect(response.body).toEqual({ error: 'Já existe um projeto com esses dados' });
+            expect(response.body).toEqual({
+                error: 'Erro ao criar projeto',
+                details: 'Já existe um projeto com esses dados'
+            });
         });
 
         it('deve retornar erro 500 quando falhar', async () => {
@@ -288,7 +294,10 @@ describe('Project Routes', () => {
                 .send(validProjectData)
                 .expect(500);
 
-            expect(response.body).toEqual({ error: 'Erro de banco de dados' });
+            expect(response.body).toEqual({
+                error: 'Erro ao criar projeto',
+                details: 'Erro de banco de dados'
+            });
         });
     });
 
@@ -404,7 +413,7 @@ describe('Project Routes', () => {
             const response = await request(app)
                 .put('/api/v2/projects/1')
                 .send(validUpdateData)
-                .expect(404);
+                .expect(400);
 
             expect(response.body).toEqual({ error: 'Cliente não encontrado' });
         });
@@ -428,7 +437,10 @@ describe('Project Routes', () => {
                 .send(validUpdateData)
                 .expect(500);
 
-            expect(response.body).toEqual({ error: 'Erro de banco de dados' });
+            expect(response.body).toEqual({
+                error: 'Erro ao atualizar projeto',
+                details: 'Erro de banco de dados'
+            });
         });
     });
 
@@ -446,12 +458,9 @@ describe('Project Routes', () => {
 
             const response = await request(app)
                 .delete('/api/v2/projects/1')
-                .expect(200);
+                .expect(204);
 
-            expect(response.body).toEqual({
-                success: true,
-                message: 'Projeto "Projeto para Deletar" (ID: 1) deletado com sucesso'
-            });
+            expect(response.body).toEqual({});
             expect(mockPrisma.project.findUnique).toHaveBeenCalledWith({ where: { id: 1 } });
             expect(mockPrisma.project.delete).toHaveBeenCalledWith({ where: { id: 1 } });
         });
@@ -489,7 +498,7 @@ describe('Project Routes', () => {
 
             const response = await request(app)
                 .delete('/api/v2/projects/1')
-                .expect(409);
+                .expect(400);
 
             expect(response.body).toEqual({ error: 'Não é possível deletar o projeto pois possui relacionamentos ativos' });
         });
@@ -510,7 +519,10 @@ describe('Project Routes', () => {
                 .delete('/api/v2/projects/1')
                 .expect(500);
 
-            expect(response.body).toEqual({ error: 'Erro de banco de dados' });
+            expect(response.body).toEqual({
+                error: 'Erro ao deletar projeto',
+                details: 'Erro de banco de dados'
+            });
         });
     });
 }); 

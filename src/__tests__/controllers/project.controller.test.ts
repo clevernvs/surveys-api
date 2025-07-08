@@ -26,15 +26,18 @@ describe('ProjectController', () => {
     let mockResponse: Partial<Response>;
     let mockJson: jest.Mock;
     let mockStatus: jest.Mock;
+    let mockSend: jest.Mock;
 
     beforeEach(() => {
         mockJson = jest.fn().mockReturnThis();
         mockStatus = jest.fn().mockReturnThis();
+        mockSend = jest.fn().mockReturnThis();
 
         mockRequest = {};
         mockResponse = {
             json: mockJson,
-            status: mockStatus
+            status: mockStatus,
+            send: mockSend
         };
 
         // Limpar todos os mocks
@@ -152,8 +155,8 @@ describe('ProjectController', () => {
             await createProject(mockRequest as Request, mockResponse as Response);
 
             expect(mockProjectServiceInstance.create).toHaveBeenCalledWith(projectData);
+            expect(mockStatus).toHaveBeenCalledWith(201);
             expect(mockJson).toHaveBeenCalledWith(mockCreatedProject);
-            expect(mockStatus).not.toHaveBeenCalled();
         });
 
         it('deve retornar erro 400 quando dados inválidos', async () => {
@@ -267,8 +270,8 @@ describe('ProjectController', () => {
             await updateProject(mockRequest as Request, mockResponse as Response);
 
             expect(mockProjectServiceInstance.update).toHaveBeenCalledWith(1, updateData);
+            expect(mockStatus).toHaveBeenCalledWith(200);
             expect(mockJson).toHaveBeenCalledWith(mockUpdatedProject);
-            expect(mockStatus).not.toHaveBeenCalled();
         });
 
         it('deve retornar erro 404 quando projeto não encontrado', async () => {
