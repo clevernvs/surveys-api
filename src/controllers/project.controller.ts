@@ -37,7 +37,6 @@ export const createProject = async (req: Request, res: Response): Promise<void> 
         const project = await projectService.create(projectData);
         res.status(201).json(project);
     } catch (error: any) {
-        console.error('Erro detalhado:', error);
         res.status(500).json({
             error: 'Erro ao criar projeto',
             details: error.message || 'Erro desconhecido'
@@ -54,8 +53,6 @@ export const updateProject = async (req: Request, res: Response): Promise<void> 
         const project = await projectService.update(Number(id), projectData);
         res.status(200).json(project);
     } catch (error: any) {
-        console.error('Erro detalhado na atualização:', error);
-
         // Tratamento específico de erros
         if (error.message === 'Projeto não encontrado') {
             res.status(404).json({ error: 'Projeto não encontrado' });
@@ -81,8 +78,6 @@ export const deleteProject = async (req: Request, res: Response): Promise<void> 
         await projectService.delete(Number(id));
         res.status(204).send();
     } catch (error: any) {
-        console.error('Erro detalhado na exclusão:', error);
-
         // Tratamento específico de erros
         if (error.message === 'Projeto não encontrado') {
             res.status(404).json({ error: 'Projeto não encontrado' });

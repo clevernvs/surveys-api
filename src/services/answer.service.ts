@@ -6,7 +6,6 @@ export class AnswerService {
             const answers = await prisma.answer.findMany();
             return answers;
         } catch (error) {
-            console.error('Erro ao buscar respostas:', error);
             throw new Error('Erro ao buscar respostas no banco de dados');
         }
     }
@@ -25,7 +24,6 @@ export class AnswerService {
             });
             return answer;
         } catch (error: any) {
-            console.error('Erro ao criar resposta:', error);
             if (error.code === 'P2003') {
                 throw new Error('A pergunta informada (question_id) não existe.');
             }
@@ -55,7 +53,6 @@ export class AnswerService {
             });
             return answer;
         } catch (error: any) {
-            console.error('Erro ao atualizar resposta:', error);
             if (error.code === 'P2003') {
                 throw new Error('A pergunta informada (question_id) não existe.');
             }
@@ -78,7 +75,6 @@ export class AnswerService {
             await prisma.answer.delete({ where: { id } });
             return { success: true, message: `Resposta (ID: ${id}) deletada com sucesso` };
         } catch (error: any) {
-            console.error('Erro ao deletar resposta:', error);
             if (error.code === 'P2025') {
                 throw new Error('Resposta não encontrada');
             }
@@ -97,7 +93,6 @@ export class AnswerService {
             }
             return answer;
         } catch (error: any) {
-            console.error('Erro ao buscar resposta por ID:', error);
             if (error.message) {
                 throw new Error(error.message);
             }

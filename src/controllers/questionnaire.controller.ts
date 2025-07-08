@@ -12,7 +12,6 @@ export const getAllQuestionnaires = async (_req: Request, res: Response) => {
             message: 'Questionários encontrados com sucesso'
         });
     } catch (error) {
-        console.error('Erro no controller de questionários:', error);
         res.status(500).json({
             success: false,
             error: 'Erro interno do servidor ao buscar questionários',

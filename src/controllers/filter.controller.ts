@@ -12,7 +12,6 @@ export const getAllFilters = async (_req: Request, res: Response) => {
             message: 'Filtros encontrados com sucesso'
         });
     } catch (error) {
-        console.error('Erro no controller getAllFilters:', error);
         res.status(500).json({
             success: false,
             error: 'Erro interno do servidor ao buscar filtros',
@@ -40,7 +39,6 @@ export const getFilterById = async (req: Request, res: Response): Promise<void> 
             message: 'Filtro encontrado com sucesso'
         });
     } catch (error) {
-        console.error('Erro no controller getFilterById:', error);
         if (error instanceof Error && error.message === 'Filtro não encontrado') {
             res.status(404).json({
                 success: false,
@@ -66,7 +64,6 @@ export const createFilter = async (req: Request, res: Response): Promise<void> =
             message: 'Filtro criado com sucesso'
         });
     } catch (error) {
-        console.error('Erro no controller createFilter:', error);
         if (error instanceof Error && error.message === 'Questionário não encontrado') {
             res.status(404).json({
                 success: false,
@@ -102,7 +99,6 @@ export const updateFilter = async (req: Request, res: Response): Promise<void> =
             message: 'Filtro atualizado com sucesso'
         });
     } catch (error) {
-        console.error('Erro no controller updateFilter:', error);
         if (error instanceof Error) {
             if (error.message === 'Filtro não encontrado') {
                 res.status(404).json({
@@ -147,7 +143,6 @@ export const deleteFilter = async (req: Request, res: Response): Promise<void> =
             message: result.message
         });
     } catch (error) {
-        console.error('Erro no controller deleteFilter:', error);
         if (error instanceof Error && error.message === 'Filtro não encontrado') {
             res.status(404).json({
                 success: false,
@@ -181,7 +176,6 @@ export const getFiltersByQuestionnaire = async (req: Request, res: Response): Pr
             message: 'Filtros encontrados com sucesso'
         });
     } catch (error) {
-        console.error('Erro no controller getFiltersByQuestionnaire:', error);
         res.status(500).json({
             success: false,
             error: 'Erro ao buscar filtros por questionário',
@@ -207,7 +201,6 @@ export const getFiltersByGender = async (req: Request, res: Response): Promise<v
             message: 'Filtros encontrados com sucesso'
         });
     } catch (error) {
-        console.error('Erro no controller getFiltersByGender:', error);
         res.status(500).json({
             success: false,
             error: 'Erro ao buscar filtros por gênero',
@@ -233,7 +226,6 @@ export const getFiltersByAgeRange = async (req: Request, res: Response): Promise
             message: 'Filtros encontrados com sucesso'
         });
     } catch (error) {
-        console.error('Erro no controller getFiltersByAgeRange:', error);
         res.status(500).json({
             success: false,
             error: 'Erro ao buscar filtros por faixa etária',
@@ -259,7 +251,6 @@ export const getFiltersBySocialClass = async (req: Request, res: Response): Prom
             message: 'Filtros encontrados com sucesso'
         });
     } catch (error) {
-        console.error('Erro no controller getFiltersBySocialClass:', error);
         res.status(500).json({
             success: false,
             error: 'Erro ao buscar filtros por classe social',
@@ -289,7 +280,6 @@ export const getFiltersByLocation = async (req: Request, res: Response): Promise
             message: 'Filtros encontrados com sucesso'
         });
     } catch (error) {
-        console.error('Erro no controller getFiltersByLocation:', error);
         res.status(500).json({
             success: false,
             error: 'Erro ao buscar filtros por localização',

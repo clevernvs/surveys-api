@@ -20,7 +20,6 @@ export class QuestionService {
 
             return questions;
         } catch (error) {
-            console.error('Erro ao buscar questões:', error);
             throw new Error('Erro interno do servidor');
         }
     }

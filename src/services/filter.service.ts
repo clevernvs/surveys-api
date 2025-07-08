@@ -3,16 +3,13 @@ import prisma from '../prisma/client';
 export class FilterService {
     async findAll() {
         try {
-            console.log('Iniciando busca de filtros...');
             const filters = await prisma.filter.findMany({
                 orderBy: {
                     created_at: 'desc'
                 }
             });
-            console.log('Filtros encontrados:', filters.length);
             return filters;
         } catch (error) {
-            console.error('Erro ao buscar filtros (detalhado):', error);
             throw error; // Deixa o erro real subir para o controller
         }
     }
@@ -150,7 +147,6 @@ export class FilterService {
 
             return filters;
         } catch (error) {
-            console.error('Erro ao buscar filtros por questionário:', error);
             throw error;
         }
     }
@@ -166,7 +162,6 @@ export class FilterService {
 
             return filters;
         } catch (error) {
-            console.error('Erro ao buscar filtros por gênero:', error);
             throw error;
         }
     }
@@ -182,7 +177,6 @@ export class FilterService {
 
             return filters;
         } catch (error) {
-            console.error('Erro ao buscar filtros por faixa etária:', error);
             throw error;
         }
     }
@@ -198,7 +192,6 @@ export class FilterService {
 
             return filters;
         } catch (error) {
-            console.error('Erro ao buscar filtros por classe social:', error);
             throw error;
         }
     }
@@ -224,7 +217,6 @@ export class FilterService {
 
             return filters;
         } catch (error) {
-            console.error('Erro ao buscar filtros por localização:', error);
             throw error;
         }
     }

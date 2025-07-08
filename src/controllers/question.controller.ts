@@ -12,7 +12,6 @@ export const getAllQuestions = async (_req: Request, res: Response) => {
             message: 'Questões encontradas com sucesso'
         });
     } catch (error) {
-        console.error('Erro no controller de questões:', error);
         res.status(500).json({
             success: false,
             error: 'Erro interno do servidor ao buscar questões',

@@ -14,7 +14,6 @@ export class ProjectService {
 
             return projects;
         } catch (error) {
-            console.error('Erro ao buscar projetos:', error);
             throw new Error('Erro ao buscar projetos no banco de dados');
         }
     }
@@ -37,7 +36,6 @@ export class ProjectService {
 
             return project;
         } catch (error) {
-            console.error('Erro ao buscar projeto por ID:', error);
             throw new Error('Erro ao buscar projeto no banco de dados');
         }
     }
@@ -81,8 +79,6 @@ export class ProjectService {
 
             return project;
         } catch (error: any) {
-            console.error('Erro ao criar projeto:', error);
-
             // Tratamento específico de erros do Prisma
             if (error.code === 'P2002') {
                 throw new Error('Já existe um projeto com esses dados');
@@ -149,8 +145,6 @@ export class ProjectService {
 
             return project;
         } catch (error: any) {
-            console.error('Erro ao atualizar projeto:', error);
-
             // Tratamento específico de erros do Prisma
             if (error.code === 'P2025') {
                 throw new Error('Projeto não encontrado');
@@ -192,8 +186,6 @@ export class ProjectService {
                 message: `Projeto "${existingProject.title}" (ID: ${id}) deletado com sucesso`
             };
         } catch (error: any) {
-            console.error('Erro ao deletar projeto:', error);
-
             // Tratamento específico de erros do Prisma
             if (error.code === 'P2025') {
                 throw new Error('Projeto não encontrado');

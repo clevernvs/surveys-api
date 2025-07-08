@@ -6,7 +6,6 @@ export class ClientService {
             const clients = await prisma.client.findMany();
             return clients;
         } catch (error) {
-            console.error('Erro ao buscar clientes:', error);
             throw new Error('Erro ao buscar clientes no banco de dados');
         }
     }
@@ -23,7 +22,6 @@ export class ClientService {
 
             return client;
         } catch (error) {
-            console.error('Erro ao buscar cliente por ID:', error);
             throw new Error('Erro ao buscar cliente no banco de dados');
         }
     }
@@ -44,8 +42,6 @@ export class ClientService {
 
             return client;
         } catch (error: any) {
-            console.error('Erro ao criar cliente:', error);
-
             if (error.code === 'P2002') {
                 throw new Error('Já existe um cliente com esse email');
             }
@@ -84,8 +80,6 @@ export class ClientService {
 
             return client;
         } catch (error: any) {
-            console.error('Erro ao atualizar cliente:', error);
-
             if (error.code === 'P2002') {
                 throw new Error('Já existe um cliente com esse email');
             }
@@ -121,8 +115,6 @@ export class ClientService {
                 message: `Cliente "${existingClient.name}" (ID: ${id}) deletado com sucesso`
             };
         } catch (error: any) {
-            console.error('Erro ao deletar cliente:', error);
-
             if (error.code === 'P2025') {
                 throw new Error('Cliente não encontrado');
             }

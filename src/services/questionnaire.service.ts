@@ -16,7 +16,6 @@ export class QuestionnaireService {
 
             return questionnaires;
         } catch (error) {
-            console.error('Erro ao buscar questionários:', error);
             throw new Error('Erro interno do servidor');
         }
     }
