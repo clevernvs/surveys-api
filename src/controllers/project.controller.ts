@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import { ProjectService } from '../services/project.service';
 import { CreateProjectInput, UpdateProjectInput } from '../schemas/project.schema';
 
-const projectService = new ProjectService();
+// Para facilitar os testes, exportamos a instância
+export const projectService = new ProjectService();
 
 export const getAllProjects = async (_req: Request, res: Response) => {
     try {

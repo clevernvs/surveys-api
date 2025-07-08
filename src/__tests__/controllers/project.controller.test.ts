@@ -1,16 +1,6 @@
 import { Request, Response } from 'express';
-import {
-    getAllProjects,
-    getProjectById,
-    createProject,
-    updateProject,
-    deleteProject
-} from '../../controllers/project.controller';
 
-// Mock do ProjectService
-jest.mock('../../services/project.service');
-
-// Mock da instância do service
+// Mock do service antes de importar o controller
 const mockProjectServiceInstance = {
     findAll: jest.fn(),
     findById: jest.fn(),
@@ -19,7 +9,17 @@ const mockProjectServiceInstance = {
     delete: jest.fn()
 };
 
-jest.mocked(require('../../services/project.service').ProjectService).mockImplementation(() => mockProjectServiceInstance);
+jest.mock('../../services/project.service', () => ({
+    ProjectService: jest.fn().mockImplementation(() => mockProjectServiceInstance)
+}));
+
+import {
+    getAllProjects,
+    getProjectById,
+    createProject,
+    updateProject,
+    deleteProject
+} from '../../controllers/project.controller';
 
 describe('ProjectController', () => {
     let mockRequest: Partial<Request>;

@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import { AnswerService } from '../services/answer.service';
 
-const answerService = new AnswerService();
+// Para facilitar os testes, exportamos a instância
+export const answerService = new AnswerService();
 
 export const getAllAnswers = async (_req: Request, res: Response) => {
     try {

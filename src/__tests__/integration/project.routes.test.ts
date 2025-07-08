@@ -1,9 +1,7 @@
+import { mockPrisma } from '../mocks/prisma.mock';
+jest.mock('../../prisma/client', () => mockPrisma);
 import request from 'supertest';
 import app from '../../app';
-import { mockPrisma } from '../mocks/prisma.mock';
-
-// Mock do Prisma
-jest.mock('../../prisma/client', () => mockPrisma);
 
 describe('Project Routes', () => {
     beforeEach(() => {
@@ -48,7 +46,7 @@ describe('Project Routes', () => {
             mockPrisma.project.findMany.mockResolvedValue(mockProjects);
 
             const response = await request(app)
-                .get('/projects')
+                .get('/api/v2/projects')
                 .expect(200);
 
             expect(response.body).toEqual(mockProjects);
@@ -67,7 +65,7 @@ describe('Project Routes', () => {
             mockPrisma.project.findMany.mockRejectedValue(error);
 
             const response = await request(app)
-                .get('/projects')
+                .get('/api/v2/projects')
                 .expect(500);
 
             expect(response.body).toEqual({ error: 'Erro ao buscar projetos' });
@@ -90,7 +88,7 @@ describe('Project Routes', () => {
             mockPrisma.project.findUnique.mockResolvedValue(mockProject);
 
             const response = await request(app)
-                .get('/projects/1')
+                .get('/api/v2/projects/1')
                 .expect(200);
 
             expect(response.body).toEqual(mockProject);
@@ -109,7 +107,7 @@ describe('Project Routes', () => {
             mockPrisma.project.findUnique.mockResolvedValue(null);
 
             const response = await request(app)
-                .get('/projects/999')
+                .get('/api/v2/projects/999')
                 .expect(404);
 
             expect(response.body).toEqual({ error: 'Projeto não encontrado' });
@@ -117,7 +115,7 @@ describe('Project Routes', () => {
 
         it('deve retornar erro 400 quando ID inválido', async () => {
             const response = await request(app)
-                .get('/projects/abc')
+                .get('/api/v2/projects/abc')
                 .expect(400);
 
             expect(response.body).toHaveProperty('error');
@@ -125,7 +123,7 @@ describe('Project Routes', () => {
 
         it('deve retornar erro 400 quando ID negativo', async () => {
             const response = await request(app)
-                .get('/projects/-1')
+                .get('/api/v2/projects/-1')
                 .expect(400);
 
             expect(response.body).toHaveProperty('error');
@@ -136,7 +134,7 @@ describe('Project Routes', () => {
             mockPrisma.project.findUnique.mockRejectedValue(error);
 
             const response = await request(app)
-                .get('/projects/1')
+                .get('/api/v2/projects/1')
                 .expect(500);
 
             expect(response.body).toEqual({ error: 'Erro ao buscar projeto' });
@@ -168,7 +166,7 @@ describe('Project Routes', () => {
             mockPrisma.project.create.mockResolvedValue(mockCreatedProject);
 
             const response = await request(app)
-                .post('/projects')
+                .post('/api/v2/projects')
                 .send(validProjectData)
                 .expect(200);
 
@@ -200,7 +198,7 @@ describe('Project Routes', () => {
             const invalidData = { ...validProjectData, title: '' };
 
             const response = await request(app)
-                .post('/projects')
+                .post('/api/v2/projects')
                 .send(invalidData)
                 .expect(400);
 
@@ -211,7 +209,7 @@ describe('Project Routes', () => {
             const invalidData = { ...validProjectData, description: '' };
 
             const response = await request(app)
-                .post('/projects')
+                .post('/api/v2/projects')
                 .send(invalidData)
                 .expect(400);
 
@@ -222,7 +220,7 @@ describe('Project Routes', () => {
             const { client_id, ...invalidData } = validProjectData;
 
             const response = await request(app)
-                .post('/projects')
+                .post('/api/v2/projects')
                 .send(invalidData)
                 .expect(400);
 
@@ -233,7 +231,7 @@ describe('Project Routes', () => {
             const invalidData = { ...validProjectData, language_id: -1 };
 
             const response = await request(app)
-                .post('/projects')
+                .post('/api/v2/projects')
                 .send(invalidData)
                 .expect(400);
 
@@ -244,7 +242,7 @@ describe('Project Routes', () => {
             const invalidData = { ...validProjectData, sample_size: 0 };
 
             const response = await request(app)
-                .post('/projects')
+                .post('/api/v2/projects')
                 .send(invalidData)
                 .expect(400);
 
@@ -255,7 +253,7 @@ describe('Project Routes', () => {
             mockPrisma.client.findUnique.mockResolvedValue(null);
 
             const response = await request(app)
-                .post('/projects')
+                .post('/api/v2/projects')
                 .send(validProjectData)
                 .expect(404);
 
@@ -271,7 +269,7 @@ describe('Project Routes', () => {
             mockPrisma.project.create.mockRejectedValue(error);
 
             const response = await request(app)
-                .post('/projects')
+                .post('/api/v2/projects')
                 .send(validProjectData)
                 .expect(409);
 
@@ -286,7 +284,7 @@ describe('Project Routes', () => {
             mockPrisma.project.create.mockRejectedValue(error);
 
             const response = await request(app)
-                .post('/projects')
+                .post('/api/v2/projects')
                 .send(validProjectData)
                 .expect(500);
 
@@ -323,7 +321,7 @@ describe('Project Routes', () => {
             mockPrisma.project.update.mockResolvedValue(mockUpdatedProject);
 
             const response = await request(app)
-                .put('/projects/1')
+                .put('/api/v2/projects/1')
                 .send(validUpdateData)
                 .expect(200);
 
@@ -357,7 +355,7 @@ describe('Project Routes', () => {
             mockPrisma.project.findUnique.mockResolvedValue(null);
 
             const response = await request(app)
-                .put('/projects/999')
+                .put('/api/v2/projects/999')
                 .send(validUpdateData)
                 .expect(404);
 
@@ -366,7 +364,7 @@ describe('Project Routes', () => {
 
         it('deve retornar erro 400 quando ID inválido', async () => {
             const response = await request(app)
-                .put('/projects/abc')
+                .put('/api/v2/projects/abc')
                 .send(validUpdateData)
                 .expect(400);
 
@@ -385,7 +383,7 @@ describe('Project Routes', () => {
             mockPrisma.project.findUnique.mockResolvedValue(existingProject);
 
             const response = await request(app)
-                .put('/projects/1')
+                .put('/api/v2/projects/1')
                 .send(invalidData)
                 .expect(400);
 
@@ -404,7 +402,7 @@ describe('Project Routes', () => {
             mockPrisma.client.findUnique.mockResolvedValue(null);
 
             const response = await request(app)
-                .put('/projects/1')
+                .put('/api/v2/projects/1')
                 .send(validUpdateData)
                 .expect(404);
 
@@ -426,7 +424,7 @@ describe('Project Routes', () => {
             mockPrisma.project.update.mockRejectedValue(error);
 
             const response = await request(app)
-                .put('/projects/1')
+                .put('/api/v2/projects/1')
                 .send(validUpdateData)
                 .expect(500);
 
@@ -447,7 +445,7 @@ describe('Project Routes', () => {
             mockPrisma.project.delete.mockResolvedValue(existingProject);
 
             const response = await request(app)
-                .delete('/projects/1')
+                .delete('/api/v2/projects/1')
                 .expect(200);
 
             expect(response.body).toEqual({
@@ -462,7 +460,7 @@ describe('Project Routes', () => {
             mockPrisma.project.findUnique.mockResolvedValue(null);
 
             const response = await request(app)
-                .delete('/projects/999')
+                .delete('/api/v2/projects/999')
                 .expect(404);
 
             expect(response.body).toEqual({ error: 'Projeto não encontrado' });
@@ -470,7 +468,7 @@ describe('Project Routes', () => {
 
         it('deve retornar erro 400 quando ID inválido', async () => {
             const response = await request(app)
-                .delete('/projects/abc')
+                .delete('/api/v2/projects/abc')
                 .expect(400);
 
             expect(response.body).toHaveProperty('error');
@@ -490,7 +488,7 @@ describe('Project Routes', () => {
             mockPrisma.project.delete.mockRejectedValue(error);
 
             const response = await request(app)
-                .delete('/projects/1')
+                .delete('/api/v2/projects/1')
                 .expect(409);
 
             expect(response.body).toEqual({ error: 'Não é possível deletar o projeto pois possui relacionamentos ativos' });
@@ -509,7 +507,7 @@ describe('Project Routes', () => {
             mockPrisma.project.delete.mockRejectedValue(error);
 
             const response = await request(app)
-                .delete('/projects/1')
+                .delete('/api/v2/projects/1')
                 .expect(500);
 
             expect(response.body).toEqual({ error: 'Erro de banco de dados' });

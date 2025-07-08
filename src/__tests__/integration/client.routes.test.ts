@@ -16,8 +16,8 @@ jest.mock('../../services/client.service', () => ({
 
 // Mock do middleware de validação
 jest.mock('../../middleware/zod-validation.middleware', () => ({
-    validateZod: jest.fn((schema) => (req: any, res: any, next: any) => next()),
-    validateParams: jest.fn((schema) => (req: any, res: any, next: any) => next()),
+    validateZod: jest.fn(() => (req: any, res: any, next: any) => next()),
+    validateParams: jest.fn(() => (req: any, res: any, next: any) => next()),
 }));
 
 import clientRoutes from '../../routes/client.routes';

@@ -15,7 +15,7 @@ export class AnswerService {
             const answer = await prisma.answer.create({
                 data: {
                     question_id: data.question_id,
-                    answer_type: data.answer_type,
+                    answer_type: data.answer_type ?? 'TEXT',
                     value: data.value,
                     fixed: data.fixed ?? false,
                     order_index: data.order_index,
