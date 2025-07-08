@@ -34,6 +34,13 @@ export const mockPrisma = {
         update: jest.fn(),
         delete: jest.fn(),
     },
+    filter: {
+        findMany: jest.fn(),
+        findUnique: jest.fn(),
+        create: jest.fn(),
+        update: jest.fn(),
+        delete: jest.fn(),
+    },
 };
 
 export const resetPrismaMock = () => {
