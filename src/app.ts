@@ -8,6 +8,7 @@ import projectRoutes from './routes/project.routes';
 import questionnaireRoutes from './routes/questionnaire.routes';
 import questionRoutes from './routes/question.routes';
 import answerRoutes from './routes/answer.routes';
+import filterRoutes from './routes/filter.routes';
 
 const env = dotenv.config();
 dotenvExpand.expand(env);
@@ -27,5 +28,6 @@ app.use('/api/v2', projectRoutes);
 app.use('/api/v2', questionnaireRoutes);
 app.use('/api/v2', questionRoutes);
 app.use('/api/v2', answerRoutes);
+app.use('/api/v2', filterRoutes);
 
 export default app;

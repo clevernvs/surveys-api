@@ -192,6 +192,24 @@ async function main() {
     });
     console.log('✅ Respostas criadas:', { answer1, answer2 });
 
+    // Criar Filter
+    const filter = await prisma.filter.upsert({
+        where: { id: 1 },
+        update: {},
+        create: {
+            id: 1,
+            questionnaire_id: 1,
+            gender_id: 1,
+            social_class_id: 1,
+            age_range_id: 1,
+            country_id: 1,
+            city_id: 1,
+            state_id: 1,
+            quota_id: 1
+        }
+    });
+    console.log('✅ Filtro criado:', filter);
+
     console.log('🎉 Seed concluído com sucesso!');
 }
 
